@@ -93,6 +93,7 @@ class LegacyFileResolver
     {
         $base = $this->baseDirectory();
 
-        return ltrim(substr($absolutePath, strlen($base)), '/\\');
+        // Used to build URLs, so normalise Windows separators to "/".
+        return str_replace('\\', '/', ltrim(substr($absolutePath, strlen($base)), '/\\'));
     }
 }
