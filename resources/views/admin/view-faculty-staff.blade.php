@@ -12,6 +12,7 @@
 @endsection
 
 @section('content')
+{{-- Avatars can fail before view-staff.js loads; queue them until it does. --}}    <script>window.handleImageError = window.handleImageError || function (img) { img.dataset.needsFallback = '1'; };</script>
     <div class="head-title">
         <div class="left">
             <h1>Faculty Staff Management</h1>
