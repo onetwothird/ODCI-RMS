@@ -719,3 +719,7 @@ function handleImageError(img) {
     img.style.display = 'none';
     img.parentNode.insertBefore(placeholder, img);
 }
+// Replace the early stub from the Blade view and process avatars that failed
+// before this file loaded.
+window.handleImageError = handleImageError;
+document.querySelectorAll('img[data-needs-fallback="1"]').forEach(handleImageError);
