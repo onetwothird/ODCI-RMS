@@ -59,7 +59,7 @@
                 <i class='bx bxs-user-plus'></i>
                 <h3>{{ number_format($summary['users_pending']) }}</h3>
             </div>
-            <p class="stat-label">Pending Approval{{ $summary['users_total'] > 0 ? ' &middot; '.number_format($summary['users_pending']).' of '.number_format($summary['users_total']).' accounts' : '' }}</p>
+            <p class="stat-label">Pending Approval{{ $summary['users_total'] > 0 ? ' · '.number_format($summary['users_pending']).' of '.number_format($summary['users_total']).' accounts' : '' }}</p>
         </li>
     </ul>
 
