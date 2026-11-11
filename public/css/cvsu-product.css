@@ -3551,3 +3551,29 @@ body.user-my-files-page #content main .alert-error {
         flex-direction: column;
     }
 }
+
+/* ==========================================================================
+   Laravel module pages (Tailwind-built views)
+   Keep them on the same rhythm as the legacy-styled pages.
+   ========================================================================== */
+ul.breadcrumb {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+    padding: 0 !important;
+    list-style: none;
+}
+ul.breadcrumb li { display: inline-flex; align-items: center; }
+ul.breadcrumb li i { font-size: 14px; color: var(--cvsu-grey-400, #9ca3af); }
+.breadcrumb a.active, ul.breadcrumb li a.active {
+    color: var(--cvsu-green-700) !important;
+    font-weight: 600;
+}
+.breadcrumb a:hover { color: var(--cvsu-green-600) !important; }
+
+/* Tailwind pages wrap their content in `p-6 lg:p-8`; <main> already pads. */
+#content main > .p-6:first-child,
+#content main > .p-6.lg\:p-8 {
+    padding: 0;
+}
