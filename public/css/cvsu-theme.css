@@ -168,10 +168,12 @@ body {
 /* One type ramp. Every heading level has exactly one job. */
 h1, h2, h3, h4, h5, h6 {
     font-family: inherit;
-    color: var(--cvsu-ink) !important;
     letter-spacing: -.015em;
     line-height: var(--lh-tight);
     margin: 0;
+}
+:is(h1, h2, h3, h4, h5, h6):not([class*="text-"]) {
+    color: var(--cvsu-ink) !important;
 }
 h1 { font-size: var(--fs-xl) !important; font-weight: var(--fw-bold) !important; }
 h2 { font-size: var(--fs-lg) !important; font-weight: var(--fw-semi) !important; }
@@ -194,8 +196,10 @@ small { font-size: var(--fs-sm); color: var(--cvsu-green-900); }
 .prose ul, .prose ol { margin: 0 0 var(--sp-4); padding-left: var(--sp-5); }
 .prose li { margin-bottom: var(--sp-2); }
 
-a { color: var(--cvsu-green-600) !important; text-decoration: none; transition: color var(--cvsu-transition); }
-a:hover { color: var(--cvsu-green-500) !important; }
+/* Links styled with a Tailwind text-* utility keep that colour (module pages). */
+a:not([class*="text-"]) { color: var(--cvsu-green-600) !important; }
+a { text-decoration: none; transition: color var(--cvsu-transition); }
+a:not([class*="text-"]):hover { color: var(--cvsu-green-500) !important; }
 
 /* Consistent focus ring everywhere (accessibility + consistency) */
 a:focus-visible,
