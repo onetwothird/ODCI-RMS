@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>@yield('title', config('app.name', 'ODCI Document Hub'))</title>
+    <title>@yield('title', config('app.name', 'ODCI Document'))</title>
 
     {{--
         Static assets are served from public/ directly.
@@ -14,7 +14,7 @@
         (public/build/manifest.json) does not exist until `npm run build`
         is run, and @vite throws ViteManifestNotFoundException without it.
     --}}
-    <link href='https://unpkg.com/boxicons@2.0.9/css/boxicons.min.css' rel='stylesheet'>
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
     <link rel="stylesheet" href="{{ asset('css/cvsu-auth.css') }}">
     <link rel="stylesheet" href="{{ asset('css/app.css') }}">
     <link rel="icon" type="image/png" href="{{ asset('img/cvsu-logo.png') }}">
@@ -26,7 +26,7 @@
             <a href="{{ url('/') }}" class="app-brand">
                 <img src="{{ asset('img/cvsu-logo.png') }}" alt="CVSU Naic Logo" class="app-brand-logo">
                 <span class="app-brand-text">
-                    <strong>ODCI Document Hub</strong>
+                    <strong>ODCI Document</strong>
                     <small>Office of the Director for Curriculum and Instruction</small>
                 </span>
             </a>
