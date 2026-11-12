@@ -13,7 +13,7 @@
     <div class="container">
         <h2>Password Reset Request</h2>
         <p>Hello,</p>
-        <p>We received a request to reset the password for your ODCI Document Hub account.</p>
+        <p>We received a request to reset the password for your ODCI Document account.</p>
         <p>Use the secure link below within one hour:</p>
         <p style="text-align: center;">
             <a href="{{ $resetUrl }}" class="button">Reset Password</a>
@@ -21,7 +21,7 @@
         <p>Or copy this link: <br><small>{{ $resetUrl }}</small></p>
         <p>If you did not request this change, you can ignore this email.</p>
         <div class="footer">
-            <p>CvSU Naic Campus Document Hub</p>
+            <p>CvSU Naic Campus Document</p>
         </div>
     </div>
 </body>
