@@ -11,8 +11,7 @@
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
     <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
     {{-- Port of include includes/theme.php --}}
-    <link rel="stylesheet" href="{{ asset('css/cvsu-theme.css') }}">
-    <link rel="stylesheet" href="{{ asset('css/cvsu-product.css') }}">
+    @vite('resources/css/app.css')
     <script src="{{ asset('js/cvsu-theme.js') }}" defer></script>
     <style>
         :root {
@@ -204,7 +203,7 @@
             <div class="brand-lockup">
                 <span class="brand-mark" aria-hidden="true"><i class="bx bx-shield-quarter"></i></span>
                 <div>
-                    <div class="brand-name">ODCI Document Hub</div>
+                    <div class="brand-name">ODCI Document</div>
                     <div class="brand-location">CvSU Naic Campus</div>
                 </div>
             </div>
