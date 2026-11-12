@@ -977,7 +977,7 @@ class CommentSystem {
             return;
         }
 
-        if (!confirm('Are you sure you want to delete this comment?')) return;
+        if (!(await window.feedDialog.confirm('Delete this comment?', 'This comment will be removed. This cannot be undone.', 'Delete comment'))) return;
         
         try {
             const response = await fetch('/social_feed/delete_comment.php', {
