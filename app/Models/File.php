@@ -14,6 +14,9 @@ class File extends Model
 {
     protected $table = 'files';
 
+    // The legacy table has `uploaded_at` / `updated_at`, not `created_at`.
+    public const CREATED_AT = 'uploaded_at';
+
     protected $fillable = [
         'file_name',
         'original_name',
