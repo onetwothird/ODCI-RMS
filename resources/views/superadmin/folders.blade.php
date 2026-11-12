@@ -4,7 +4,6 @@
 @section('body-class', 'superadmin-folders-page')
 
 @section('page-css')
-    <link rel="stylesheet" href="{{ asset('css/tailwind.css') }}">
 @endsection
 
 @section('content')
