@@ -61,7 +61,7 @@
         </div>
         <div class="rounded-card border border-line bg-white p-5 shadow-card">
             <div class="flex items-center gap-3">
-                <div class="flex h-11 w-11 items-center justify-center rounded-full bg-cvsu-gold-100 text-cvsu-gold-600"><i class='bx bxs-size text-xl'></i></div>
+                <div class="flex h-11 w-11 items-center justify-center rounded-full bg-cvsu-gold-100 text-cvsu-gold-600"><i class='bx bxs-data text-xl'></i></div>
                 <div>
                     <div class="text-2xl font-extrabold text-ink">{{ $fs($stats->total_size ?? 0) }}</div>
                     <div class="text-sm text-muted">Total Storage Used</div>
