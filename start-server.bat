@@ -18,7 +18,7 @@ setlocal
 cd /d "%~dp0"
 
 echo.
-echo   ODCI Document Hub - Laravel 11
+echo   ODCI Document - Laravel 11
 echo   ---------------------------------------------
 echo   URL:  http://127.0.0.1:8000/login
 echo   Stop: Ctrl+C
