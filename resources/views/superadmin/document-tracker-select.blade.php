@@ -3,7 +3,6 @@
 @section('title', 'Document Tracker - CVSU Naic')
 
 @section('page-css')
-    <link rel="stylesheet" href="{{ asset('css/tailwind.css') }}">
     <style>
         .fade-in { animation: saFade .35s ease both; }
         @keyframes saFade { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
