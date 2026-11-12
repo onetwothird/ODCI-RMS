@@ -14,6 +14,6 @@ class ExampleTest extends TestCase
     {
         $response = $this->get('/');
 
-        $response->assertStatus(200);
+        $response->assertOk()->assertSee('ODCI Document')->assertSee(route('login'), false)->assertSee(route('register'), false);
     }
 }
