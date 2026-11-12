@@ -79,8 +79,8 @@ class PeopleListingTest extends TestCase
         $response->assertOk();
         $response->assertSee('id="sidebar"', false);
         $response->assertSee('<section id="content">', false);
-        $response->assertSee('css/cvsu-theme.css', false);
-        $response->assertSee('boxicons@2.0.9', false);
+        $response->assertSee('build/assets/app-', false);
+        $response->assertSee('boxicons@2.1.4', false);
         $response->assertSee('js/cvsu-theme.js', false);
     }
 
