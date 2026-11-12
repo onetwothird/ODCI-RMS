@@ -102,11 +102,11 @@ if (! function_exists('activityIcon')) {
             'upload_file' => 'bx-upload',
             'create_folder' => 'bx-folder-plus',
             'approve_user' => 'bx-check',
-            'create_announcement' => 'bx-megaphone',
+            'create_announcement' => 'bxs-megaphone',
             'delete_file' => 'bx-trash',
         ];
 
-        return $icons[$action] ?? 'bx-activity';
+        return $icons[$action] ?? 'bx-pulse';
     }
 }
 
