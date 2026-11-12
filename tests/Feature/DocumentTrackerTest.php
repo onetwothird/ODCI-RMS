@@ -67,8 +67,8 @@ class DocumentTrackerTest extends TestCase
         $response->assertOk();
         $response->assertSee('id="sidebar"', false);
         $response->assertSee('<section id="content">', false);
-        $response->assertSee('css/cvsu-theme.css', false);
-        $response->assertSee('boxicons@2.0.9', false);
+        $response->assertSee('build/assets/app-', false);
+        $response->assertSee('boxicons@2.1.4', false);
     }
 
     // -----------------------------------------------------------------
@@ -115,7 +115,7 @@ class DocumentTrackerTest extends TestCase
         $this->assertLegacySkeleton($response);
         $response->assertSee('Document Submission Tracker', false);
         $response->assertSee('Faculty Document Tracker', false);
-        $response->assertSee('css/tailwind.css', false);
+        $response->assertSee('build/assets/app-', false);
         $response->assertSee('FACULTY STAFF', false);
         $response->assertSee('CAVITE STATE UNIVERSITY - NAIC CAMPUS', false);
     }
