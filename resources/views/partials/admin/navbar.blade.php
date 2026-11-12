@@ -21,12 +21,12 @@
                 <i class='bx bx-bell' aria-hidden="true"></i>
                 <span class="notification-badge" hidden>0</span>
             </button>
-            <div class="notification-dropdown" id="notificationDropdown" data-endpoint="#" data-feed-url="#">
+            <div class="notification-dropdown" id="notificationDropdown" data-endpoint="{{ route('notifications.index') }}" data-feed-url="{{ route('admin.social-feed') }}">
                 <div class="notification-header">
                     <h4>Notifications</h4>
                     <button class="mark-all-read" type="button">Mark all read</button>
                 </div>
-                <div class="notification-list" id="notificationList" aria-live="polite">
+                <div class="notification-list" id="notificationList" data-csrf-token="{{ csrf_token() }}" aria-live="polite">
                     <div class="cvsu-notification-loading" aria-label="Loading notifications"><span></span><span></span><span></span></div>
                 </div>
                 <div class="notification-footer"><a href="{{ route('admin.social-feed') }}">Open Social Feed</a></div>
