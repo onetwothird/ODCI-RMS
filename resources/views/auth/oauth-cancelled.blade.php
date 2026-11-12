@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Authentication Cancelled - CVSU Naic</title>
     <link rel="icon" type="image/png" href="{{ asset('img/cvsu-logo.png') }}">
-    <link href='https://unpkg.com/boxicons@2.0.9/css/boxicons.min.css' rel='stylesheet'>
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
     <link rel="stylesheet" href="{{ asset('css/cancelled.css') }}">
     <link rel="stylesheet" href="{{ asset('css/cvsu-auth.css') }}?v=1.8.6">
 </head>
