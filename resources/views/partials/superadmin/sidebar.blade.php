@@ -4,13 +4,12 @@
         <a href="{{ route('superadmin.dashboard') }}" class="brand">
             <img src="{{ asset('img/cvsu-logo.png') }}" alt="CVSU logo">
             <span class="text">
-                <span class="brand-title">ODCI Document Hub</span>
+                <span class="brand-title">ODCI Document</span>
                 <span class="brand-subtitle">CVSU Naic</span>
             </span>
         </a>
         <button class="cvsu-drawer-back" type="button" aria-label="Back to page">
             <i class="bx bx-arrow-back" aria-hidden="true"></i>
-            <span>Back</span>
         </button>
     </div>
 
