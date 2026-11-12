@@ -4,7 +4,6 @@
 @section('body-class', 'admin-shared-page')
 
 @section('page-css')
-    <link rel="stylesheet" href="{{ asset('css/tailwind.css') }}">
     <style>
         .modal-bg { position: fixed; inset: 0; z-index: 60; display: none; align-items: flex-start;
             justify-content: center; padding: 6vh 1rem; background: rgba(11, 61, 30, .5);
