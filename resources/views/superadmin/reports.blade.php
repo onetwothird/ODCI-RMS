@@ -4,7 +4,6 @@
 @section('body-class', 'superadmin-reports-page')
 
 @section('page-css')
-    <link rel="stylesheet" href="{{ asset('css/tailwind.css') }}">
     <style>
         .rep-tab { display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.6rem 1.1rem; border-radius: 10px;
             font-size: 0.85rem; font-weight: 600; color: #6b7280 !important; border: 1px solid #e6ebe7; background: #fff; transition: all .2s ease; }
