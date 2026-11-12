@@ -18,8 +18,16 @@ use Illuminate\Support\Facades\Route;
 |--------------------------------------------------------------------------
 */
 
+// Public landing page. Signed-in visitors get an "Open dashboard" button.
 Route::get('/', function () {
-    return view('welcome');
+    $dashboard = match (auth()->user()?->role) {
+        'super_admin' => 'superadmin.dashboard',
+        'admin' => 'admin.dashboard',
+        'user' => 'user.dashboard',
+        default => null,
+    };
+
+    return view('welcome', ['dashboardUrl' => $dashboard ? route($dashboard) : null]);
 })->name('home');
 
 /*
@@ -103,6 +111,10 @@ Route::get('/login/google', [\App\Http\Controllers\Auth\GoogleOAuthController::c
     ->name('oauth.google.redirect');
 Route::get('/login/google/callback', [\App\Http\Controllers\Auth\GoogleOAuthController::class, 'callback'])
     ->name('oauth.google.callback');
+Route::get('/login/google/complete', [\App\Http\Controllers\Auth\GoogleOAuthController::class, 'showComplete'])
+    ->name('oauth.google.complete');
+Route::post('/login/google/complete', [\App\Http\Controllers\Auth\GoogleOAuthController::class, 'storeComplete'])
+    ->name('oauth.google.complete.store');
 Route::get('/login/google/cancelled', [\App\Http\Controllers\Auth\GoogleOAuthController::class, 'cancelled'])
     ->name('oauth.google.cancelled');
 
@@ -140,6 +152,10 @@ Route::get('/uploads/{path}', \App\Http\Controllers\LegacyUploadController::clas
 */
 
 Route::middleware(['auth', 'active.account'])->group(function () {
+    // Header notification bell (legacy includes/notifications_endpoint.php).
+    Route::get('/notifications', [\App\Http\Controllers\NotificationController::class, 'index'])->name('notifications.index');
+    Route::post('/notifications', [\App\Http\Controllers\NotificationController::class, 'update'])->name('notifications.update');
+
     Route::get('/user/dashboard', [UserDashboardController::class, 'index'])
         ->middleware('role:user')
         ->name('user.dashboard');
