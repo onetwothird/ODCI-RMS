@@ -23,7 +23,7 @@ class PasswordResetMail extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Reset your ODCI Document Hub password',
+            subject: 'Reset your ODCI Document password',
         );
     }
 
