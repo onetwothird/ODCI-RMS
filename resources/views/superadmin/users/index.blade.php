@@ -2,10 +2,6 @@
 
 @section('title', 'User Management')
 
-@section('page-css')
-    <link rel="stylesheet" href="{{ asset('css/superadmin/users.css') }}">
-@endsection
-
 @section('content')
 <div class="head-title">
     <div class="left">
@@ -16,10 +12,16 @@
             <li><a class="active" href="{{ route('superadmin.users.index') }}">Users</a></li>
         </ul>
     </div>
-    <button onclick="openModal('createUserModal')" class="btn-download">
-        <i class='bx bx-user-plus'></i>
-        <span class="text">Add User</span>
-    </button>
+    <div class="right">
+        <button class="btn btn-secondary" type="button" title="Refresh" onclick="window.location.reload()">
+            <i class='bx bx-refresh'></i>
+            <span>Refresh</span>
+        </button>
+        <button onclick="openModal('createUserModal')" class="btn btn-primary">
+            <i class='bx bx-user-plus'></i>
+            <span>Add User</span>
+        </button>
+    </div>
 </div>
 
 {{-- Flash messages --}}
@@ -36,192 +38,120 @@
 @endif
 
 {{-- Filters --}}
-<div class="filters">
-    <div class="filter-tabs">
-        <a href="{{ $users->appends(array_merge(request()->query(), ['filter' => 'all', 'page' => 1])) }}"
-           class="filter-tab {{ request()->query('filter', 'all') === 'all' ? 'active' : '' }}">
-            All ({{ $counts['all'] }})
-        </a>
-        <a href="{{ $users->appends(array_merge(request()->query(), ['filter' => 'pending', 'page' => 1])) }}"
-           class="filter-tab {{ request()->query('filter') === 'pending' ? 'active' : '' }}">
-            Pending ({{ $counts['pending'] }})
-        </a>
-        <a href="{{ $users->appends(array_merge(request()->query(), ['filter' => 'approved', 'page' => 1])) }}"
-           class="filter-tab {{ request()->query('filter') === 'approved' ? 'active' : '' }}">
-            Approved ({{ $counts['approved'] }})
-        </a>
-        <a href="{{ $users->appends(array_merge(request()->query(), ['filter' => 'restricted', 'page' => 1])) }}"
-           class="filter-tab {{ request()->query('filter') === 'restricted' ? 'active' : '' }}">
-            Restricted ({{ $counts['restricted'] }})
-        </a>
+<div class="ui-card mb-5 flex flex-col gap-4 p-3 sm:p-4 lg:flex-row lg:items-end lg:justify-between">
+    <div class="flex gap-1 overflow-x-auto">
+        @foreach (['all' => 'All', 'pending' => 'Pending', 'approved' => 'Approved', 'restricted' => 'Restricted'] as $key => $label)
+            @php $isCurrent = request()->query('filter', 'all') === $key; @endphp
+            <a href="{{ $users->appends(array_merge(request()->query(), ['filter' => $key, 'page' => 1])) }}"
+               class="whitespace-nowrap rounded-full px-4 py-1.5 text-sm font-semibold transition {{ $isCurrent ? 'bg-cvsu-green-600 text-white' : 'text-cvsu-green-700 hover:bg-cvsu-green-50' }}">
+                {{ $label }} ({{ $counts[$key] }})
+            </a>
+        @endforeach
     </div>
 
-    <div class="filter-group">
-        <label for="department-filter">Department:</label>
-        <select id="department-filter" onchange="filterUsers()">
-            <option value="">All Departments</option>
-            @foreach ($departments as $dept)
-                <option value="{{ $dept->id }}" {{ request()->query('department') == $dept->id ? 'selected' : '' }}>
-                    {{ $dept->department_code }} - {{ $dept->department_name }}
-                </option>
-            @endforeach
-        </select>
-    </div>
-
-    <div class="filter-group">
-        <label for="role-filter">Role:</label>
-        <select id="role-filter" onchange="filterUsers()">
-            <option value="">All Roles</option>
-            <option value="user" {{ request()->query('role') === 'user' ? 'selected' : '' }}>User</option>
-            <option value="admin" {{ request()->query('role') === 'admin' ? 'selected' : '' }}>Admin</option>
-            <option value="super_admin" {{ request()->query('role') === 'super_admin' ? 'selected' : '' }}>Super Admin</option>
-        </select>
+    <div class="grid gap-3 sm:grid-cols-2 lg:w-[34rem]">
+        <div>
+            <label for="department-filter" class="ui-label">Department</label>
+            <select id="department-filter" onchange="filterUsers()" class="ui-input">
+                <option value="">All departments</option>
+                @foreach ($departments as $dept)
+                    <option value="{{ $dept->id }}" {{ request()->query('department') == $dept->id ? 'selected' : '' }}>
+                        {{ $dept->department_code }} - {{ $dept->department_name }}
+                    </option>
+                @endforeach
+            </select>
+        </div>
+        <div>
+            <label for="role-filter" class="ui-label">Role</label>
+            <select id="role-filter" onchange="filterUsers()" class="ui-input">
+                <option value="">All roles</option>
+                <option value="user" {{ request()->query('role') === 'user' ? 'selected' : '' }}>User</option>
+                <option value="admin" {{ request()->query('role') === 'admin' ? 'selected' : '' }}>Admin</option>
+                <option value="super_admin" {{ request()->query('role') === 'super_admin' ? 'selected' : '' }}>Super admin</option>
+            </select>
+        </div>
     </div>
 </div>
 
-{{-- Search form (JS will wire it up) --}}
-<form id="userSearchForm" method="GET" style="margin-bottom: 20px;">
+{{-- Search --}}
+<form id="userSearchForm" method="GET" class="mb-5 flex gap-2">
     <input type="hidden" name="filter" value="{{ request()->query('filter', 'all') }}">
     <input type="hidden" name="department" value="{{ request()->query('department', '') }}">
     <input type="hidden" name="role" value="{{ request()->query('role', '') }}">
-    <div style="display: flex; gap: 10px; align-items: center;">
-        <input type="text" 
-               id="userSearchInput" 
-               name="search" 
-               placeholder="Search users..." 
-               value="{{ request()->query('search', '') }}"
-               style="flex: 1; max-width: 300px; padding: 10px; border: 1px solid #ddd; border-radius: 4px;">
-        <button type="submit" class="btn btn-primary">
-            <i class='bx bx-search'></i> Search
-        </button>
-        @if (request()->query('search'))
-            <a href="{{ $users->appends(array_diff_key(request()->query(), ['search' => ''])) }}" class="btn btn-secondary">
-                <i class='bx bx-x'></i> Clear
-            </a>
-        @endif
-    </div>
+    <input type="text" id="userSearchInput" name="search" placeholder="Search users"
+           value="{{ request()->query('search', '') }}" class="ui-input w-full sm:w-72">
+    <button type="submit" class="ui-btn-primary"><i class='bx bx-search'></i> Search</button>
+    @if (request()->query('search'))
+        <a href="{{ $users->appends(array_diff_key(request()->query(), ['search' => ''])) }}" class="ui-btn-ghost">
+            <i class='bx bx-x'></i> Clear
+        </a>
+    @endif
 </form>
 
-{{-- User Grid --}}
-<div class="user-grid">
+{{-- User grid --}}
+<div class="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
     @forelse ($users as $user)
-        <div class="user-card">
-            <div class="user-header">
-                <div class="user-avatar">
-                    @php
-                        $initials = strtoupper(mb_substr($user->name, 0, 1) . mb_substr($user->surname, 0, 1));
-                        $hasProfileImage = !empty($user->profile_image_url);
-                    @endphp
-
-                    @if ($hasProfileImage)
-                        <img src="{{ $user->profile_image_url }}" 
-                             alt="{{ $user->name }} {{ $user->surname }}" 
-                             style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;"
-                             onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-                        <div class="fallback-avatar" 
-                             style="display: none; width: 100%; height: 100%; 
-                                    background: linear-gradient(135deg, #007bff, #4a90e2); 
-                                    color: white; font-weight: bold; 
-                                    align-items: center; justify-content: center; 
-                                    border-radius: 50%;">
-                            {{ $initials }}
-                        </div>
-                    @else
-                        <div class="letter-avatar" 
-                             style="width: 100%; height: 100%; 
-                                    background: linear-gradient(135deg, #007bff, #4a90e2); 
-                                    color: white; font-weight: bold; 
-                                    display: flex; align-items: center; justify-content: center; 
-                                    border-radius: 50%;">
-                            {{ $initials }}
-                        </div>
+        @php
+            $initials = strtoupper(mb_substr($user->name, 0, 1) . mb_substr($user->surname, 0, 1));
+            $statusLabel = ! $user->is_approved ? 'Pending' : ($user->is_restricted ? 'Restricted' : 'Approved');
+            $statusClass = ! $user->is_approved
+                ? 'bg-cvsu-gold-100 text-cvsu-gold-700'
+                : ($user->is_restricted ? 'bg-red-100 text-red-700' : 'bg-cvsu-green-100 text-cvsu-green-800');
+        @endphp
+        <article class="ui-card flex flex-col gap-4 p-4 sm:p-5">
+            <header class="flex items-center gap-3">
+                <div class="relative grid h-12 w-12 flex-none place-items-center overflow-hidden rounded-full bg-cvsu-green-600 text-base font-bold text-white">
+                    <span>{{ $initials }}</span>
+                    @if (! empty($user->profile_image_url))
+                        <img src="{{ $user->profile_image_url }}" alt="{{ $user->name }} {{ $user->surname }}"
+                             class="absolute inset-0 h-full w-full object-cover" onerror="this.remove()">
                     @endif
                 </div>
-                <div class="user-info">
-                    <h3>{{ $user->name }} {{ $user->mi ? $user->mi . '. ' : '' }}{{ $user->surname }}</h3>
-                    <p>{{ "@".$user->username }}</p>
+                <div class="min-w-0 flex-1">
+                    <h3 class="truncate text-base font-semibold text-ink">{{ $user->name }} {{ $user->mi ? $user->mi . '. ' : '' }}{{ $user->surname }}</h3>
+                    <p class="truncate text-sm text-muted">{{ '@'.$user->username }}</p>
                 </div>
-            </div>
+                <span class="ui-badge shrink-0 {{ $statusClass }}">{{ $statusLabel }}</span>
+            </header>
 
-            <div class="user-details">
-                <div>
-                    <span>Email:</span>
-                    <span>{{ $user->email }}</span>
-                </div>
-                <div>
-                    <span>Employee ID:</span>
-                    <span>{{ $user->employee_id ?? 'N/A' }}</span>
-                </div>
-                <div>
-                    <span>Department:</span>
-                    <span>{{ $user->department->department_code ?? 'N/A' }}</span>
-                </div>
-                <div>
-                    <span>Position:</span>
-                    <span>{{ $user->position ?? 'N/A' }}</span>
-                </div>
-                <div>
-                    <span>Role:</span>
-                    <span style="text-transform: capitalize;">{{ $user->role }}</span>
-                </div>
-                <div>
-                    <span>Status:</span>
-                    <span class="user-status {{ 
-                        !$user->is_approved ? 'status-pending' : 
-                        ($user->is_restricted ? 'status-restricted' : 'status-approved') 
-                    }}">
-                        @if (!$user->is_approved) Pending
-                        @elseif ($user->is_restricted) Restricted
-                        @else Approved
-                        @endif
-                    </span>
-                </div>
-                <div>
-                    <span>Joined:</span>
-                    <span>{{ \Carbon\Carbon::parse($user->created_at)->format('M j, Y') }}</span>
-                </div>
-                @if ($user->last_login)
-                    <div>
-                        <span>Last Login:</span>
-                        <span>{{ \Carbon\Carbon::parse($user->last_login)->format('M j, Y') }}</span>
-                    </div>
+            <dl class="grid grid-cols-[auto_1fr] gap-x-4 gap-y-1.5 text-sm">
+                @foreach ([
+                    'Email' => $user->email,
+                    'Employee ID' => $user->employee_id ?? 'N/A',
+                    'Department' => $user->department->department_code ?? 'N/A',
+                    'Position' => $user->position ?? 'N/A',
+                    'Role' => ucwords(str_replace('_', ' ', $user->role)),
+                    'Joined' => \Carbon\Carbon::parse($user->created_at)->format('M j, Y'),
+                    'Last login' => $user->last_login ? \Carbon\Carbon::parse($user->last_login)->format('M j, Y') : 'Never',
+                ] as $label => $value)
+                    <dt class="text-muted">{{ $label }}</dt>
+                    <dd class="min-w-0 break-words text-right font-medium text-ink">{{ $value }}</dd>
+                @endforeach
+            </dl>
+
+            <footer class="mt-auto grid grid-cols-2 gap-2 [&>*:last-child:nth-child(odd)]:col-span-2">
+                <button onclick="editUser({{ $user->id }})" class="ui-btn-primary flex-1"><i class='bx bx-edit'></i> Edit</button>
+                @if (! $user->is_approved)
+                    <button onclick="approveUser({{ $user->id }})" class="ui-btn-primary flex-1"><i class='bx bx-check'></i> Approve</button>
                 @endif
-            </div>
-
-            <div class="user-actions">
-                <button onclick="editUser({{ $user->id }})" class="btn btn-primary">
-                    <i class='bx bx-edit'></i> Edit
-                </button>
-
-                @if (!$user->is_approved)
-                    <button onclick="approveUser({{ $user->id }})" class="btn btn-success">
-                        <i class='bx bx-check'></i> Approve
-                    </button>
-                @endif
-
-                <button onclick="resetPassword({{ $user->id }})" class="btn btn-warning">
-                    <i class='bx bx-key'></i> Reset
-                </button>
-
+                <button onclick="resetPassword({{ $user->id }})" class="ui-btn-ghost flex-1"><i class='bx bx-key'></i> Reset password</button>
                 @if ($user->role !== 'super_admin')
-                    <button onclick="deleteUser({{ $user->id }}, '{{ $user->name }} {{ $user->surname }}')" class="btn btn-danger">
-                        <i class='bx bx-trash'></i> Delete
-                    </button>
+                    <button onclick="deleteUser({{ $user->id }}, @js($user->name.' '.$user->surname))" class="ui-btn-danger flex-1"><i class='bx bx-trash'></i> Delete</button>
                 @endif
-            </div>
-        </div>
+            </footer>
+        </article>
     @empty
-        <div style="text-align: center; padding: 60px; color: #666;">
-            <i class='bx bx-user' style="font-size: 64px; margin-bottom: 20px; display: block;"></i>
-            <h3>No users found</h3>
-            <p>Try adjusting your search or filter criteria</p>
+        <div class="ui-card col-span-full flex flex-col items-center gap-2 px-6 py-14 text-center">
+            <i class='bx bx-user text-5xl text-cvsu-green-600'></i>
+            <h3 class="text-lg font-semibold text-ink">No users found</h3>
+            <p class="text-sm text-muted">Change the search or filters to see more people.</p>
         </div>
     @endforelse
 </div>
 
 {{-- Pagination --}}
 @if ($users->lastPage() > 1)
-    <div class="pagination">
+    <div class="mt-6 flex flex-wrap items-center justify-center gap-2 text-sm">
         {{-- Previous --}}
         @if ($users->currentPage() > 1)
             <a href="{{ $users->previousPageUrl() }}">&laquo; Previous</a>
