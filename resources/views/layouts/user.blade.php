@@ -9,7 +9,7 @@
     <title>@yield('title', 'Dashboard - CVSU Naic')</title>
 
     <link rel="icon" type="image/png" href="{{ asset('img/cvsu-logo.png') }}">
-    <link href='https://unpkg.com/boxicons@2.0.9/css/boxicons.min.css' rel='stylesheet'>
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
 
     {{-- Component Stylesheets (identical order to legacy roles/user/*.php) --}}
     <link rel="stylesheet" href="{{ asset('css/user/components/sidebar.css') }}">
@@ -22,8 +22,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
 
     {{-- Shared CVSU design system (green / gold / white) - loaded last on purpose --}}
-    <link rel="stylesheet" href="{{ asset('css/cvsu-theme.css') }}">
-    <link rel="stylesheet" href="{{ asset('css/cvsu-product.css') }}">
+    @vite('resources/css/app.css')
 
     {{-- Legacy: department code badge on the profile tile --}}
     @if (auth()->user()?->department?->department_code)
@@ -69,6 +68,7 @@
     <script src="{{ asset('js/user/components/navbar.js') }}"></script>
 
     @yield('scripts')
+    @stack('scripts')
 </body>
 
 </html>
