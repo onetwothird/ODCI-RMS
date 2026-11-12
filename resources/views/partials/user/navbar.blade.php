@@ -39,12 +39,12 @@
                 <i class='bx bx-bell'></i>
                 <span class="notification-badge" {{ $notificationCount > 0 ? '' : 'hidden' }}>{{ $notificationCount }}</span>
             </button>
-            <div class="notification-dropdown" id="notificationDropdown" data-endpoint="#" data-feed-url="#">
+            <div class="notification-dropdown" id="notificationDropdown" data-endpoint="{{ route('notifications.index') }}" data-feed-url="{{ route('user.social-feed') }}">
                 <div class="notification-header">
                     <h4>Notifications</h4>
                     <button class="mark-all-read" type="button">Mark all read</button>
                 </div>
-                <div class="notification-list" id="notificationList" aria-live="polite">
+                <div class="notification-list" id="notificationList" data-csrf-token="{{ csrf_token() }}" aria-live="polite">
                     <div class="cvsu-notification-loading" aria-label="Loading notifications">
                         <span></span><span></span><span></span>
                     </div>
