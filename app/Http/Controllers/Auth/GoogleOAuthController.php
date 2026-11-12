@@ -92,6 +92,60 @@ class GoogleOAuthController extends Controller
     }
 
     /**
+     * GET /login/google/complete - collect the profile details Google does not give us.
+     */
+    public function showComplete(Request $request)
+    {
+        $user = $this->pendingGoogleUser();
+
+        if (! $user) {
+            return redirect()->route('login')->with('error', 'Please sign in with Google again to finish registering.');
+        }
+
+        $departments = \App\Models\Department::query()->where('is_active', 1)->orderBy('department_name')->get();
+
+        return view('auth.google-complete', compact('user', 'departments'));
+    }
+
+    /**
+     * POST /login/google/complete
+     */
+    public function storeComplete(Request $request): RedirectResponse
+    {
+        $user = $this->pendingGoogleUser();
+
+        if (! $user) {
+            return redirect()->route('login')->with('error', 'Please sign in with Google again to finish registering.');
+        }
+
+        $data = $request->validate([
+            'name' => ['required', 'string', 'max:100'],
+            'mi' => ['nullable', 'string', 'max:5'],
+            'surname' => ['required', 'string', 'max:100'],
+            'employee_id' => ['required', 'string', 'max:50', 'unique:users,employee_id,'.$user->id],
+            'position' => ['required', 'string', 'max:100'],
+            'department_id' => ['required', 'integer', 'exists:departments,id'],
+            'phone' => ['nullable', 'string', 'max:30'],
+            'date_of_birth' => ['nullable', 'date'],
+            'address' => ['nullable', 'string', 'max:255'],
+        ]);
+
+        $user->forceFill($data)->save();
+        session()->forget('google_complete_user');
+
+        $this->activityLogger->logRequest($user->id, 'register_google_complete', 'user', $user->id, 'Completed Google registration details');
+
+        return redirect()->route('login')->with('success', 'Registration complete! An administrator will review your account before you can sign in.');
+    }
+
+    private function pendingGoogleUser(): ?User
+    {
+        $id = session('google_complete_user');
+
+        return $id ? User::query()->where('id', $id)->where('is_approved', 0)->first() : null;
+    }
+
+    /**
      * GET /login/google/cancelled
      */
     public function cancelled(): \Illuminate\Contracts\View\View
@@ -171,6 +225,12 @@ class GoogleOAuthController extends Controller
                     return redirect()->to($role);
                 }
 
+                if (empty($existingUser->employee_id) || empty($existingUser->department_id)) {
+                    session(['google_complete_user' => $existingUser->id]);
+
+                    return redirect()->route('oauth.google.complete');
+                }
+
                 return redirect()->route('login')->with('error', 'Your account is pending approval. Please contact the administrator.');
             }
 
@@ -200,7 +260,11 @@ class GoogleOAuthController extends Controller
                 'User registered via Google OAuth',
             );
 
-            return redirect()->route('login')->with('success', 'Account created! Please wait for approval.');
+            // Google gives us a name and email only. Collect the rest before the
+            // account goes to an administrator for approval.
+            session(['google_complete_user' => $user->id]);
+
+            return redirect()->route('oauth.google.complete');
         } catch (Throwable $e) {
             Log::error('Google OAuth handleUser error: '.$e->getMessage());
 
