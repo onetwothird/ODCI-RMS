@@ -4,7 +4,6 @@
 @section('body-class', 'user-folders-page')
 
 @section('page-css')
-    <link rel="stylesheet" href="{{ asset('css/tailwind.css') }}">
     <style>
         .modal-bg { position: fixed; inset: 0; z-index: 60; display: none; align-items: flex-start;
             justify-content: center; padding: 6vh 1rem; background: rgba(11, 61, 30, .5);
@@ -98,7 +97,7 @@
             <h3 class="mb-3 flex items-center gap-2 font-bold text-ink">
                 <i class='bx bxs-category text-xl text-cvsu-green-600'></i> Document Categories
             </h3>
-            <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
+            <div class="grid grid-cols-1 items-start gap-4 sm:grid-cols-2 xl:grid-cols-4">
                 @foreach ($categories as $key => $cat)
                     <div id="catCard-{{ $key }}" class="cat-card cursor-pointer rounded-card border border-line bg-white p-4 shadow-card"
                          onclick="toggleCategory('{{ $key }}')">
@@ -136,7 +135,7 @@
             <h3 class="mb-3 mt-8 flex items-center gap-2 font-bold text-ink">
                 <i class='bx bxs-folder text-xl text-cvsu-gold-500'></i> My Custom Folders
             </h3>
-            <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
+            <div class="grid grid-cols-1 items-start gap-4 sm:grid-cols-2 xl:grid-cols-4">
                 @forelse ($customFolders as $folder)
                     <div id="customCard-{{ $folder->id }}" class="cat-card cursor-pointer rounded-card border border-line bg-white p-4 shadow-card"
                          onclick="toggleCustomFolder({{ $folder->id }})">
@@ -188,7 +187,7 @@
                 <input type="hidden" name="category" id="upCategory" value="">
 
                 <div>
-                    <label class="mb-1 block text-xs font-semibold uppercase tracking-wide text-muted">Destination</label>
+                    <label class="mb-1.5 block text-sm font-semibold text-ink">Destination</label>
                     <div class="flex gap-2">
                         <button type="button" id="destCategoryBtn" onclick="setUploadDestination('category', '')"
                                 class="flex-1 rounded-lg border-2 border-cvsu-green-500 bg-cvsu-green-50 px-3 py-2 text-sm font-bold text-cvsu-green-700">Document Category</button>
@@ -198,7 +197,7 @@
                 </div>
 
                 <div id="upCategoryWrap">
-                    <label class="mb-1 block text-xs font-semibold uppercase tracking-wide text-muted">Category</label>
+                    <label class="mb-1.5 block text-sm font-semibold text-ink">Category</label>
                     <select name="category_select" id="upCategorySelect" class="w-full rounded-lg border border-line bg-white px-3 py-2 text-sm focus:border-cvsu-green-500 focus:outline-none">
                         <option value="">Select a category...</option>
                         @foreach ($categories as $key => $cat)
@@ -208,7 +207,7 @@
                 </div>
 
                 <div id="upCustomWrap" class="hidden">
-                    <label class="mb-1 block text-xs font-semibold uppercase tracking-wide text-muted">Custom Folder</label>
+                    <label class="mb-1.5 block text-sm font-semibold text-ink">Custom Folder</label>
                     <select name="custom_folder_select" id="upCustomSelect" class="w-full rounded-lg border border-line bg-white px-3 py-2 text-sm focus:border-cvsu-green-500 focus:outline-none">
                         <option value="">Select a folder...</option>
                         @foreach ($customFolders as $folder)
@@ -218,7 +217,7 @@
                 </div>
 
                 <div>
-                    <label class="mb-1 block text-xs font-semibold uppercase tracking-wide text-muted">Semester</label>
+                    <label class="mb-1.5 block text-sm font-semibold text-ink">Semester</label>
                     <select onchange="document.getElementById('upSemester').value=this.value"
                             class="w-full rounded-lg border border-line bg-white px-3 py-2 text-sm focus:border-cvsu-green-500 focus:outline-none">
                         @foreach ($semesters as $sem)
@@ -228,7 +227,7 @@
                 </div>
 
                 <div>
-                    <label class="mb-1 block text-xs font-semibold uppercase tracking-wide text-muted">Academic Year</label>
+                    <label class="mb-1.5 block text-sm font-semibold text-ink">Academic Year</label>
                     <select onchange="document.getElementById('upYear').value=this.value"
                             class="w-full rounded-lg border border-line bg-white px-3 py-2 text-sm focus:border-cvsu-green-500 focus:outline-none">
                         @foreach ($academicYears as $ay)
@@ -238,15 +237,21 @@
                 </div>
 
                 <div>
-                    <label class="mb-1 block text-xs font-semibold uppercase tracking-wide text-muted">Description <span class="font-normal normal-case text-muted">(optional)</span></label>
+                    <label class="mb-1.5 block text-sm font-semibold text-ink">Description <span class="font-normal text-muted">(optional)</span></label>
                     <textarea name="description" rows="2" placeholder="Short note about these files..."
                               class="w-full rounded-lg border border-line px-3 py-2 text-sm focus:border-cvsu-green-500 focus:outline-none"></textarea>
                 </div>
 
                 <div>
-                    <label class="mb-1 block text-xs font-semibold uppercase tracking-wide text-muted">Files <span class="font-normal normal-case text-muted">(PDF, Word, Excel, images &middot; max 50MB each)</span></label>
-                    <input type="file" name="file[]" multiple required
-                           class="w-full rounded-lg border border-line px-3 py-2 text-sm file:text-xs file:mr-3 file:rounded-md file:border-0 file:bg-cvsu-green-100 file:px-3 file:py-1.5 file:font-semibold file:text-cvsu-green-700 hover:file:bg-cvsu-green-200">
+                    <label class="mb-1.5 block text-sm font-semibold text-ink">Files</label>
+                    <label for="upFiles" class="!mb-0 !flex cursor-pointer !flex-col items-center gap-1 rounded-xl bg-[#f1f5f2] px-4 py-6 text-center transition hover:bg-cvsu-green-50">
+                        <span class="grid h-11 w-11 place-items-center rounded-full bg-cvsu-green-100 text-2xl text-cvsu-green-700"><i class='bx bx-cloud-upload'></i></span>
+                        <span class="mt-1 text-sm font-semibold text-ink">Choose files to upload</span>
+                        <span class="text-xs text-muted">PDF, Word, Excel or images, up to 50MB each</span>
+                    </label>
+                    <input id="upFiles" type="file" name="file[]" multiple required class="sr-only"
+                           onchange="(function(i){var l=document.getElementById('upFileList');l.innerHTML='';Array.from(i.files).forEach(function(f){var li=document.createElement('li');li.className='flex items-center justify-between gap-3 rounded-lg bg-[#f1f5f2] px-3 py-2 text-sm';var n=document.createElement('span');n.className='min-w-0 truncate font-medium';n.textContent=f.name;var z=document.createElement('span');z.className='flex-none text-xs text-muted';z.textContent=(f.size/1048576).toFixed(2)+' MB';li.append(n,z);l.appendChild(li);});})(this)">
+                    <ul id="upFileList" class="mt-2 grid gap-1.5"></ul>
                 </div>
 
                 <div id="uploadProgressWrap" class="hidden">
@@ -275,16 +280,16 @@
             </div>
             <form id="folderForm" class="space-y-4 px-6 py-5">
                 <div>
-                    <label class="mb-1 block text-xs font-semibold uppercase tracking-wide text-muted">Folder Name</label>
+                    <label class="mb-1.5 block text-sm font-semibold text-ink">Folder Name</label>
                     <input type="text" name="folder_name" maxlength="100" required placeholder="e.g. My Research Files"
                            class="w-full rounded-lg border border-line px-3 py-2 text-sm focus:border-cvsu-green-500 focus:outline-none">
                 </div>
                 <div>
-                    <label class="mb-1 block text-xs font-semibold uppercase tracking-wide text-muted">Description <span class="font-normal normal-case text-muted">(optional)</span></label>
+                    <label class="mb-1.5 block text-sm font-semibold text-ink">Description <span class="font-normal text-muted">(optional)</span></label>
                     <textarea name="folder_description" rows="2" class="w-full rounded-lg border border-line px-3 py-2 text-sm focus:border-cvsu-green-500 focus:outline-none"></textarea>
                 </div>
                 <div>
-                    <label class="mb-1 block text-xs font-semibold uppercase tracking-wide text-muted">Folder Color</label>
+                    <label class="mb-1.5 block text-sm font-semibold text-ink">Folder Color</label>
                     <div class="flex flex-wrap gap-2">
                         @php $colors = ['#14532d', '#0f6b3d', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#06b6d4', '#f97316']; @endphp
                         @foreach ($colors as $c)
@@ -325,7 +330,7 @@
             </div>
             <div class="px-6 py-5">
                 <p class="mb-4 rounded-lg bg-muted/10 px-3 py-2 text-sm text-ink" id="shareFileName"></p>
-                <label class="mb-1 block text-xs font-semibold uppercase tracking-wide text-muted">Share With</label>
+                <label class="mb-1.5 block text-sm font-semibold text-ink">Share With</label>
                 <select id="shareType" onchange="toggleShareUser(this.value)"
                         class="mb-3 w-full rounded-lg border border-line bg-white px-3 py-2 text-sm focus:border-cvsu-green-500 focus:outline-none">
                     <option value="user">A specific user</option>
@@ -333,7 +338,7 @@
                     <option value="public">Anyone (public link)</option>
                 </select>
                 <div id="shareUserWrap">
-                    <label class="mb-1 block text-xs font-semibold uppercase tracking-wide text-muted">Select User</label>
+                    <label class="mb-1.5 block text-sm font-semibold text-ink">Select User</label>
                     <select id="shareUser" class="w-full rounded-lg border border-line bg-white px-3 py-2 text-sm focus:border-cvsu-green-500 focus:outline-none">
                         <option value="">Choose a user...</option>
                         @foreach ($shareUsers as $su)
@@ -748,5 +753,11 @@
         document.addEventListener('click', function (e) {
             if (e.target.classList.contains('modal-bg')) { e.target.classList.remove('show'); document.body.style.overflow = ''; }
         });
+    
+        // Header "Upload File" button lands here with ?upload=1
+        if (new URLSearchParams(window.location.search).get('upload') === '1') {
+            openUploadModal(null, 'category');
+            history.replaceState(null, '', window.location.pathname);
+        }
     </script>
 @endsection
