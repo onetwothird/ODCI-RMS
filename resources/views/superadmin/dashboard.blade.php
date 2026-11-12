@@ -11,39 +11,44 @@
         <div class="left">
             <h1>Super Admin Dashboard</h1>
             <ul class="breadcrumb">
-                <li><a href="#">Dashboard</a></li>
+                <li><a href="{{ route('superadmin.dashboard') }}">Dashboard</a></li>
                 <li><i class='bx bx-chevron-right'></i></li>
                 <li><a class="active" href="#">Overview</a></li>
             </ul>
         </div>
-        {{-- Legacy: backup.php (module not migrated yet) --}}
-        <a href="#" class="btn-download">
-            <i class='bx bxs-download'></i>
-            <span class="text">Backup System</span>
-        </a>
+        <div class="right">
+            <button class="btn btn-secondary" type="button" title="Refresh" onclick="window.location.reload()">
+                <i class='bx bx-refresh'></i>
+                <span>Refresh</span>
+            </button>
+            <a href="{{ route('superadmin.users.index') }}" class="btn btn-primary" title="Manage users">
+                <i class='bx bx-user-plus'></i>
+                <span>Add User</span>
+            </a>
+        </div>
     </div>
 
     {{-- Alert for pending users --}}
     @if ($stats['pending_users'] > 0)
-        <div class="alert warning">
+        <div class="alert alert-warning">
             <i class='bx bxs-error-circle'></i>
             <div>
-                <strong>Pending Approvals:</strong> You have {{ $stats['pending_users'] }} user
-                registration(s) waiting for approval.
-                <a href="{{ route('superadmin.users.index') }}?filter=pending" style="color: var(--blue); margin-left: 10px;">Review Now</a>
+                <strong>Pending Approvals:</strong> {{ $stats['pending_users'] }} user
+                registration(s) are waiting for approval.
+                <a href="{{ route('superadmin.users.index') }}?filter=pending">Review Now</a>
             </div>
         </div>
     @endif
 
     @if (session('error') === 'access_denied')
-        <div class="alert warning">
+        <div class="alert alert-warning">
             <i class='bx bxs-error-circle'></i>
             <div>Access denied. You do not have permission to view that page.</div>
         </div>
     @endif
 
     {{-- System Statistics --}}
-    <div class="stats-grid">
+    <div class="stats-grid lg:!grid-cols-3">
         <div class="stat-card">
             <div class="stat-icon users">
                 <i class='bx bxs-group'></i>
@@ -140,15 +145,14 @@
                         </div>
                     @endforeach
                 @else
-                    <div style="text-align: center; padding: 40px; color: #666;">
+                    <div class="empty-state">
                         <i class='bx bx-time' style="font-size: 48px; margin-bottom: 16px; display: block;"></i>
                         <p>No recent activities</p>
                     </div>
                 @endif
             </div>
             <div style="text-align: center; margin-top: 15px;">
-                {{-- Legacy: activity_logs.php (module not migrated yet) --}}
-                <a href="#" style="color: var(--blue); text-decoration: none; font-size: 14px;">
+                <a href="{{ route('superadmin.activity-logs') }}" style="text-decoration: none; font-size: 14px;">
                     View All Activities &rarr;
                 </a>
             </div>
@@ -160,7 +164,7 @@
                 <h3>Quick Actions</h3>
                 <i class='bx bx-plus'></i>
             </div>
-            <div style="display: grid; gap: 15px;">
+            <div style="display: grid; gap: 12px;">
                 <a href="{{ route('superadmin.users.index') }}?action=create" class="quick-action">
                     <i class='bx bx-user-plus'></i>
                     <div>Add User</div>
@@ -169,25 +173,21 @@
                     <i class='bx bx-buildings'></i>
                     <div>Add Department</div>
                 </a>
-                {{-- Legacy: social_feed.php (module not migrated yet) --}}
-                <a href="#" class="quick-action">
-                    <i class='bx bx-megaphone'></i>
-                    <div>New Announcement</div>
+                <a href="{{ route('superadmin.files') }}" class="quick-action">
+                    <i class='bx bxs-file'></i>
+                    <div>Manage Files</div>
                 </a>
-                {{-- Legacy: reports.php (module not migrated yet) --}}
-                <a href="#" class="quick-action">
+                <a href="{{ route('superadmin.document-tracker') }}" class="quick-action">
+                    <i class='bx bx-check-square'></i>
+                    <div>Document Tracker</div>
+                </a>
+                <a href="{{ route('superadmin.reports') }}" class="quick-action">
                     <i class='bx bx-bar-chart-alt'></i>
                     <div>Generate Report</div>
                 </a>
-                {{-- Legacy: settings.php (module not migrated yet) --}}
-                <a href="#" class="quick-action">
+                <a href="{{ route('superadmin.settings') }}" class="quick-action">
                     <i class='bx bx-cog'></i>
                     <div>System Settings</div>
-                </a>
-                {{-- Legacy: backup.php (module not migrated yet) --}}
-                <a href="#" class="quick-action">
-                    <i class='bx bx-download'></i>
-                    <div>Backup Data</div>
                 </a>
             </div>
         </div>
@@ -201,6 +201,7 @@
                 <i class='bx bx-bar-chart'></i>
             </div>
             @if ($stats['department_stats']->isNotEmpty())
+                <div class="table-scroll">
                 <table style="width: 100%;">
                     <thead>
                         <tr>
@@ -221,9 +222,7 @@
                                     </div>
                                 </td>
                                 <td style="text-align: center;">
-                                    <span style="background: var(--light-blue); padding: 4px 8px; border-radius: 12px; font-size: 12px; font-weight: 500;">
-                                        {{ $dept->user_count }}
-                                    </span>
+                                    <span class="badge primary">{{ $dept->user_count }}</span>
                                 </td>
                                 <td style="text-align: center;">{{ $dept->folder_count }}</td>
                                 <td style="text-align: center;">{{ $dept->file_count }}</td>
@@ -234,8 +233,9 @@
                         @endforeach
                     </tbody>
                 </table>
+                </div>
             @else
-                <div style="text-align: center; padding: 40px; color: #666;">
+                <div class="empty-state">
                     <i class='bx bx-buildings' style="font-size: 48px; margin-bottom: 16px; display: block;"></i>
                     <p>No department data available</p>
                 </div>
@@ -251,31 +251,13 @@
                 <i class='bx bx-info-circle'></i>
             </div>
             <div style="padding: 20px 0;">
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; font-size: 14px;">
-                    <div>
-                        <strong>System Version:</strong><br>
-                        <span style="color: #666;">MyDrive v2.0</span>
-                    </div>
-                    <div>
-                        <strong>PHP Version:</strong><br>
-                        <span style="color: #666;">{{ phpversion() }}</span>
-                    </div>
-                    <div>
-                        <strong>Database:</strong><br>
-                        <span style="color: #666;">MySQL/MariaDB</span>
-                    </div>
-                    <div>
-                        <strong>Last Backup:</strong><br>
-                        <span style="color: #666;">Never</span>
-                    </div>
-                    <div>
-                        <strong>Disk Usage:</strong><br>
-                        <span style="color: #666;">{{ formatFileSize($stats['storage_used']) }}</span>
-                    </div>
-                    <div>
-                        <strong>Server Time:</strong><br>
-                        <span style="color: #666;">{{ now()->format('M j, Y g:i A') }}</span>
-                    </div>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 180px), 1fr)); gap: 20px; font-size: 14px;">
+                    <div><strong>Application</strong><br><span style="color: var(--text-secondary);">ODCI Document</span></div>
+                    <div><strong>Campus</strong><br><span style="color: var(--text-secondary);">CVSU Naic</span></div>
+                    <div><strong>PHP Version</strong><br><span style="color: var(--text-secondary);">{{ phpversion() }}</span></div>
+                    <div><strong>Database</strong><br><span style="color: var(--text-secondary);">MySQL / MariaDB</span></div>
+                    <div><strong>Storage Used</strong><br><span style="color: var(--text-secondary);">{{ formatFileSize($stats['storage_used']) }}</span></div>
+                    <div><strong>Server Time</strong><br><span style="color: var(--text-secondary);">{{ now()->format('M j, Y g:i A') }}</span></div>
                 </div>
             </div>
         </div>
