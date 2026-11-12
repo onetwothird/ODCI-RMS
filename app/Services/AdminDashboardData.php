@@ -254,7 +254,10 @@ class AdminDashboardData
          * Derived values for the view
          * --------------------------------------------------------------------- */
         // The uploads volume is the real storage budget for stored documents.
-        $uploadsDir = config('odci.uploads_dir');
+        $uploadsDir = rtrim((string) config('odci.legacy_root'), '/'.chr(92)).'/'.trim((string) config('odci.uploads_dir'), '/'.chr(92));
+        if (! is_dir($uploadsDir)) {
+            $uploadsDir = base_path();
+        }
         $quotaBytes = is_string($uploadsDir) && @disk_total_space($uploadsDir)
             ? (float) @disk_total_space($uploadsDir)
             : 0.0;
