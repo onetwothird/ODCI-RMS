@@ -1,3 +1,77 @@
+
+// Shared dialogs for the feed (replace the browser prompt()/confirm()).
+window.feedDialog = (function () {
+    function build(title, bodyHtml) {
+        const bg = document.createElement('div');
+        bg.className = 'modal-bg active';
+        bg.setAttribute('role', 'dialog');
+        bg.setAttribute('aria-modal', 'true');
+        bg.innerHTML =
+            '<div class="modal-panel">' +
+              '<div><h3></h3><button type="button" aria-label="Close" data-close>&times;</button></div>' +
+              '<div class="px-5 pb-5 pt-1">' + bodyHtml + '</div>' +
+            '</div>';
+        bg.querySelector('h3').textContent = title;
+        document.body.appendChild(bg);
+        return bg;
+    }
+
+    function open(title, bodyHtml, onReady) {
+        return new Promise(function (resolve) {
+            const bg = build(title, bodyHtml);
+            const done = function (value) {
+                document.removeEventListener('keydown', onKey);
+                bg.remove();
+                resolve(value);
+            };
+            const onKey = function (e) { if (e.key === 'Escape') done(null); };
+            document.addEventListener('keydown', onKey);
+            bg.addEventListener('mousedown', function (e) { if (e.target === bg) done(null); });
+            bg.querySelectorAll('[data-close]').forEach(function (b) { b.addEventListener('click', function () { done(null); }); });
+            onReady(bg, done);
+        });
+    }
+
+    const actions = function (primary, danger) {
+        return '<div class="mt-4 flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">' +
+            '<button type="button" class="ui-btn-ghost" data-close>Cancel</button>' +
+            '<button type="button" class="' + (danger ? 'ui-btn-danger' : 'ui-btn-primary') + '" data-ok>' + primary + '</button></div>';
+    };
+
+    return {
+        edit: function (current) {
+            return open('Edit post',
+                '<label for="feedEditText" class="mb-1.5 block text-sm font-semibold">What do you want to say?</label>' +
+                '<textarea id="feedEditText" rows="6" maxlength="5000" class="min-h-32 w-full resize-y rounded-xl border border-line bg-white p-3 text-sm leading-relaxed focus:border-cvsu-green-400 focus:outline-none focus:ring-2 focus:ring-cvsu-green-100"></textarea>' +
+                '<p id="feedEditError" class="mt-1 hidden text-xs text-red-600">A post cannot be empty.</p>' +
+                actions('Save changes', false),
+                function (bg, done) {
+                    const ta = bg.querySelector('#feedEditText');
+                    ta.value = current;
+                    ta.focus();
+                    ta.setSelectionRange(ta.value.length, ta.value.length);
+                    bg.querySelector('[data-ok]').addEventListener('click', function () {
+                        const v = ta.value.trim();
+                        if (!v) { bg.querySelector('#feedEditError').classList.remove('hidden'); ta.focus(); return; }
+                        done(v);
+                    });
+                    ta.addEventListener('keydown', function (e) {
+                        if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) bg.querySelector('[data-ok]').click();
+                    });
+                });
+        },
+        confirm: function (title, message, label) {
+            return open(title,
+                '<p class="text-sm leading-relaxed text-gray-600"></p>' + actions(label || 'Confirm', true),
+                function (bg, done) {
+                    bg.querySelector('p').textContent = message;
+                    bg.querySelector('[data-ok]').addEventListener('click', function () { done(true); });
+                    bg.querySelector('[data-ok]').focus();
+                }).then(function (v) { return v === true; });
+        }
+    };
+})();
+
 // post-actions.js - Fixed with proper authorization checks
 // Module for handling post interactions (like, edit, delete, etc.)
 
@@ -38,10 +112,10 @@ class PostActions {
             
             if (data.success) {
                 const post = data.post;
-                const newContent = prompt('Edit your post:', post.content);
-                
-                if (newContent && newContent.trim() !== post.content) {
-                    await this.updatePost(postId, newContent.trim());
+                const newContent = await window.feedDialog.edit(post.content);
+
+                if (newContent !== null && newContent !== post.content) {
+                    await this.updatePost(postId, newContent);
                 }
             } else {
                 window.utils.showNotification(data.message || 'Error loading post', 'error');
@@ -107,7 +181,7 @@ class PostActions {
             return;
         }
 
-        if (!confirm('Are you sure you want to delete this post?')) return;
+        if (!(await window.feedDialog.confirm('Delete this post?', 'This post and its comments will be removed for everyone. This cannot be undone.', 'Delete post'))) return;
 
         try {
             const response = await fetch('/social_feed/delete_post.php', {
