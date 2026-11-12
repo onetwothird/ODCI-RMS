@@ -4,7 +4,6 @@
 @section('body-class', 'superadmin-activity-logs-page')
 
 @section('page-css')
-    <link rel="stylesheet" href="{{ asset('css/tailwind.css') }}">
     <style>
         .badge-info { background: #e0f2fe; color: #0369a1; }
         .badge-danger { background: #fee2e2; color: #b91c1c; }
@@ -131,7 +130,7 @@
         <div class="overflow-hidden rounded-card border border-line bg-white shadow-card">
             <div class="flex items-center justify-between border-b border-line px-5 py-4">
                 <h3 class="flex items-center gap-2 text-base font-bold text-ink">
-                    <i class='bx bxs-list-ol text-cvsu-green-600'></i> Log Entries
+                    <i class='bx bx-list-ul text-cvsu-green-600'></i> Log Entries
                 </h3>
                 <span class="text-sm text-muted"><strong id="totalRecords" class="text-ink">0</strong> records</span>
             </div>
@@ -206,7 +205,7 @@
         function resourceIcon(type) {
             const icons = {
                 file: 'bx-file', folder: 'bx-folder', user: 'bx-user',
-                announcement: 'bx-megaphone', department: 'bx-building', system: 'bx-cog'
+                announcement: 'bxs-megaphone', department: 'bx-building', system: 'bx-cog'
             };
             return '<i class="bx ' + (icons[type] || 'bx-cog') + '"></i>';
         }
