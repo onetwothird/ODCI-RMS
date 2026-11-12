@@ -4,7 +4,6 @@
 @section('body-class', 'admin-document-tracker-page')
 
 @section('page-css')
-    <link rel="stylesheet" href="{{ asset('css/tailwind.css') }}">
     <style>
         .dt-table { border-collapse: collapse; width: 100%; }
         .dt-table th, .dt-table td { border-bottom: 1px solid var(--cvsu-line); }
@@ -15,9 +14,9 @@
         .dt-table td.doc-cell { cursor: pointer; text-align: center; padding: 12px 8px; }
         .dt-table td.doc-cell.submitted { background: var(--cvsu-green-50); }
         .dt-table td.doc-cell.missing { background: #fff; }
-        .vertical-header { writing-mode: vertical-lr; transform: rotate(180deg);
-            min-width: 64px; height: 140px; text-align: center; vertical-align: bottom; padding: 8px 6px; }
-        .vertical-header span { writing-mode: horizontal-tb; display: inline-block; max-width: 100%; }
+        .vertical-header { min-width: 64px; height: 150px; text-align: center; vertical-align: bottom; padding: 8px 4px; }
+        .vertical-header span { display: inline-block; max-height: 134px; overflow: hidden; white-space: nowrap;
+            writing-mode: vertical-rl; transform: rotate(180deg); text-overflow: ellipsis; }
         .modal-bg { position: fixed; inset: 0; z-index: 60; display: none; align-items: flex-start;
             justify-content: center; padding: 6vh 1rem; background: rgba(11, 61, 30, .5);
             backdrop-filter: blur(3px); overflow-y: auto; }
