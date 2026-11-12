@@ -245,7 +245,7 @@ class ActivityLogController extends Controller
             'file' => 'bx-file',
             'folder' => 'bx-folder',
             'user' => 'bx-user',
-            'announcement' => 'bx-megaphone',
+            'announcement' => 'bxs-megaphone',
             'department' => 'bx-building',
             default => 'bx-cog',
         };
