@@ -168,7 +168,11 @@ class GoogleOAuthTest extends TestCase
 
         $email = $this->faker->unique()->safeEmail();
         $user = $this->makeApprovedUser($email);
-        $user->forceFill(['is_approved' => 0])->save();
+        $user->forceFill([
+            'is_approved' => 0,
+            'employee_id' => 'EMP-'.$this->faker->unique()->numerify('#####'),
+            'department_id' => \App\Models\Department::query()->value('id'),
+        ])->save();
 
         $this->fakeGoogle(['id' => 'g4', 'email' => $email, 'name' => 'Test User']);
 
@@ -190,8 +194,7 @@ class GoogleOAuthTest extends TestCase
         $this->fakeGoogle(['id' => 'g5', 'email' => $email, 'name' => 'Juan Dela Cruz']);
 
         $this->get('/login/google/callback?code=ok')
-            ->assertRedirect(route('login'))
-            ->assertSessionHas('success', 'Account created! Please wait for approval.');
+            ->assertRedirect(route('oauth.google.complete'));
 
         $user = User::query()->where('email', $email)->first();
 
@@ -207,6 +210,46 @@ class GoogleOAuthTest extends TestCase
             ->latest('id')
             ->first();
         $this->assertNotNull($activity);
+    }
+
+    public function test_new_google_user_can_finish_registration(): void
+    {
+        config(['services.google.client_id' => 'abc', 'services.google.client_secret' => 'secret']);
+
+        $email = $this->faker->unique()->safeEmail();
+        $this->fakeGoogle(['id' => 'g6', 'email' => $email, 'name' => 'Maria Santos']);
+        $this->get('/login/google/callback?code=ok');
+
+        $this->get(route('oauth.google.complete'))->assertOk()->assertSee($email);
+
+        $deptId = \App\Models\Department::query()->value('id');
+
+        $this->post(route('oauth.google.complete.store'), [
+            'name' => 'Maria', 'surname' => 'Santos', 'employee_id' => 'GOOG-'.$this->faker->unique()->numerify('#####'),
+            'position' => 'Instructor', 'department_id' => $deptId,
+        ])->assertRedirect(route('login'))
+          ->assertSessionHas('success');
+
+        $user = User::query()->where('email', $email)->first();
+        $this->assertSame('Instructor', $user->position);
+        $this->assertSame((int) $deptId, (int) $user->department_id);
+        $this->assertSame(0, (int) $user->is_approved);
+    }
+
+    public function test_finish_registration_requires_department_and_employee_id(): void
+    {
+        config(['services.google.client_id' => 'abc', 'services.google.client_secret' => 'secret']);
+
+        $this->fakeGoogle(['id' => 'g7', 'email' => $this->faker->unique()->safeEmail(), 'name' => 'Pedro Cruz']);
+        $this->get('/login/google/callback?code=ok');
+
+        $this->post(route('oauth.google.complete.store'), ['name' => 'Pedro', 'surname' => 'Cruz', 'position' => 'Staff'])
+            ->assertSessionHasErrors(['employee_id', 'department_id']);
+    }
+
+    public function test_finish_registration_page_needs_a_google_signup(): void
+    {
+        $this->get(route('oauth.google.complete'))->assertRedirect(route('login'));
     }
 
     // -----------------------------------------------------------------
