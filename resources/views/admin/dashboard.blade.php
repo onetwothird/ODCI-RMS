@@ -37,7 +37,7 @@
                 <span>Refresh</span>
             </button>
             {{-- Legacy: files.php (module not migrated yet) --}}
-            <a class="btn btn-primary" title="Upload File" href="#">
+            <a class="btn btn-primary" title="Upload File" href="{{ route('admin.files') }}">
                 <i class='bx bxs-cloud-upload'></i>
                 <span>Upload File</span>
             </a>
@@ -217,9 +217,9 @@
                 </h3>
             </div>
 
-            <div class="quick-actions">
+            <div class="quick-actions !grid-cols-1 sm:!grid-cols-2 xl:!grid-cols-5">
                 {{-- Legacy: files.php (module not migrated yet) --}}
-                <a href="#" class="action-item">
+                <a href="{{ route('admin.files') }}" class="action-item">
                     <div class="action-content">
                         <div class="action-icon">
                             <i class='bx bx-upload'></i>
@@ -230,7 +230,7 @@
                 </a>
 
                 {{-- Legacy: folders.php (module not migrated yet) --}}
-                <a href="#" class="action-item">
+                <a href="{{ route('admin.folders') }}" class="action-item">
                     <div class="action-content">
                         <div class="action-icon">
                             <i class='bx bx-folder-plus'></i>
@@ -252,7 +252,7 @@
                 </a>
 
                 {{-- Legacy: reports.php (module not migrated yet) --}}
-                <a href="#" class="action-item">
+                <a href="{{ route('admin.document-tracker') }}" class="action-item">
                     <div class="action-content">
                         <div class="action-icon">
                             <i class='bx bx-bar-chart-alt-2'></i>
@@ -263,7 +263,7 @@
                 </a>
 
                 {{-- Legacy: profile.php (module not migrated yet) --}}
-                <a href="#" class="action-item">
+                <a href="{{ route('admin.profile') }}" class="action-item">
                     <div class="action-content">
                         <div class="action-icon">
                             <i class='bx bx-cog'></i>
@@ -287,7 +287,7 @@
                 </h3>
                 <div class="card-actions">
                     {{-- Legacy: reports.php (module not migrated yet) --}}
-                    <a class="btn-icon" href="#" title="View Details">
+                    <a class="btn-icon" href="{{ route('admin.document-tracker') }}" title="View Details">
                         <i class='bx bx-show'></i>
                     </a>
                 </div>
@@ -310,7 +310,7 @@
                 </div>
                 <div class="info-item">
                     <div class="info-label">Growth Rate</div>
-                    <div class="info-value" style="color: {{ $changes['storage']['class'] === 'negative' ? 'var(--cvsu-gold-700)' : 'var(--cvsu-green-700)' }}; font-size: 24px; font-weight: 700;">{{ $changes['storage']['label'] }}</div>
+                    <div class="info-value" style="color: {{ $changes['storage']['class'] === 'negative' ? 'var(--cvsu-gold-700)' : 'var(--cvsu-green-700)' }}; font-size: 18px; font-weight: 700;">{{ $changes['storage']['label'] }}</div>
                     <div style="color: var(--cvsu-grey-500); font-size: 12px; margin-top: 8px;">
                         <i class='bx {{ $changes['storage']['icon'] }}'></i> Last 30 days vs previous 30
                     </div>
@@ -334,7 +334,7 @@
                 </h3>
                 <div class="card-actions">
                     {{-- Legacy: profile.php (module not migrated yet) --}}
-                    <a class="btn-icon" href="#" title="Edit Profile">
+                    <a class="btn-icon" href="{{ route('admin.profile') }}" title="Edit Profile">
                         <i class='bx bx-edit'></i>
                     </a>
                 </div>
