@@ -8,7 +8,6 @@
 
 @section('page-css')
     <link rel="stylesheet" href="{{ asset('css/superadmin/dashboard.css') }}">
-    <link rel="stylesheet" href="{{ asset('css/superadmin/departments-page.css') }}">
 @endsection
 
 @section('content')
@@ -21,10 +20,16 @@
             <li><a class="active" href="{{ route('superadmin.departments.index') }}">Departments</a></li>
         </ul>
     </div>
-    <button onclick="openModal('createDeptModal')" class="btn-download">
-        <i class='bx bx-buildings'></i>
-        <span class="text">Add Department</span>
-    </button>
+    <div class="right">
+        <button class="btn btn-secondary" type="button" title="Refresh" onclick="window.location.reload()">
+            <i class='bx bx-refresh'></i>
+            <span>Refresh</span>
+        </button>
+        <button onclick="openModal('createDeptModal')" class="btn btn-primary">
+            <i class='bx bx-buildings'></i>
+            <span>Add Department</span>
+        </button>
+    </div>
 </div>
 
 {{-- Flash messages --}}
@@ -41,143 +46,110 @@
 @endif
 
 {{-- Statistics Overview --}}
-<div class="stats-overview">
-    <div class="overview-card">
-        <i class='bx bxs-buildings'></i>
-        <h3>{{ $counts['all'] }}</h3>
-        <p>Total Departments</p>
-    </div>
-    <div class="overview-card">
-        <i class='bx bxs-check-circle'></i>
-        <h3>{{ $counts['active'] }}</h3>
-        <p>Active Departments</p>
-    </div>
-    <div class="overview-card">
-        <i class='bx bxs-x-circle'></i>
-        <h3>{{ $counts['inactive'] }}</h3>
-        <p>Inactive Departments</p>
-    </div>
+<div class="mb-5 grid grid-cols-3 gap-2 sm:gap-4">
+    @foreach ([
+        ['bxs-buildings', $counts['all'], 'Total departments'],
+        ['bxs-check-circle', $counts['active'], 'Active departments'],
+        ['bxs-x-circle', $counts['inactive'], 'Inactive departments'],
+    ] as [$icon, $value, $label])
+        <div class="ui-card flex flex-col gap-1 p-3 sm:flex-row sm:items-center sm:gap-3 sm:p-4">
+            <i class='bx {{ $icon }} text-2xl text-cvsu-green-600'></i>
+            <div>
+                <div class="text-2xl font-bold leading-none text-ink">{{ $value }}</div>
+                <div class="mt-1 text-xs text-muted sm:text-sm">{{ $label }}</div>
+            </div>
+        </div>
+    @endforeach
 </div>
 
-{{-- Filters --}}
-<div class="filters">
-    <div class="filter-tabs">
-        <a href="{{ $departments->appends(array_merge(request()->query(), ['status' => 'all', 'page' => 1])) }}"
-           class="filter-tab {{ request()->query('status', 'all') === 'all' ? 'active' : '' }}">
-            All ({{ $counts['all'] }})
-        </a>
-        <a href="{{ $departments->appends(array_merge(request()->query(), ['status' => 'active', 'page' => 1])) }}"
-           class="filter-tab {{ request()->query('status') === 'active' ? 'active' : '' }}">
-            Active ({{ $counts['active'] }})
-        </a>
-        <a href="{{ $departments->appends(array_merge(request()->query(), ['status' => 'inactive', 'page' => 1])) }}"
-           class="filter-tab {{ request()->query('status') === 'inactive' ? 'active' : '' }}">
-            Inactive ({{ $counts['inactive'] }})
-        </a>
+{{-- Filters + search --}}
+<div class="mb-5 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+    <div class="flex gap-1 overflow-x-auto rounded-full bg-white p-1 shadow-card">
+        @foreach (['all' => 'All', 'active' => 'Active', 'inactive' => 'Inactive'] as $key => $label)
+            @php $isCurrent = request()->query('status', 'all') === $key; @endphp
+            <a href="{{ $departments->appends(array_merge(request()->query(), ['status' => $key, 'page' => 1])) }}"
+               class="whitespace-nowrap rounded-full px-4 py-1.5 text-sm font-semibold transition {{ $isCurrent ? 'bg-cvsu-green-600 text-white' : 'text-cvsu-green-700 hover:bg-cvsu-green-50' }}">
+                {{ $label }} ({{ $counts[$key] }})
+            </a>
+        @endforeach
     </div>
-</div>
 
-{{-- Search form --}}
-<form id="deptSearchForm" method="GET" style="margin-bottom: 20px;">
-    <input type="hidden" name="status" value="{{ request()->query('status', 'all') }}">
-    <div style="display: flex; gap: 10px; align-items: center;">
-        <input type="text" 
-               id="deptSearchInput" 
-               name="search" 
-               placeholder="Search departments..." 
-               value="{{ request()->query('search', '') }}"
-               style="flex: 1; max-width: 300px; padding: 10px; border: 1px solid #ddd; border-radius: 4px;">
-        <button type="submit" class="btn btn-primary">
-            <i class='bx bx-search'></i> Search
-        </button>
+    <form id="deptSearchForm" method="GET" class="flex gap-2">
+        <input type="hidden" name="status" value="{{ request()->query('status', 'all') }}">
+        <input type="text" id="deptSearchInput" name="search" placeholder="Search departments"
+               value="{{ request()->query('search', '') }}" class="ui-input w-full sm:w-64">
+        <button type="submit" class="ui-btn-primary"><i class='bx bx-search'></i> Search</button>
         @if (request()->query('search'))
-            <a href="{{ $departments->appends(array_diff_key(request()->query(), ['search' => ''])) }}" class="btn btn-secondary">
+            <a href="{{ $departments->appends(array_diff_key(request()->query(), ['search' => ''])) }}" class="ui-btn-ghost">
                 <i class='bx bx-x'></i> Clear
             </a>
         @endif
-    </div>
-</form>
+    </form>
+</div>
 
-{{-- Department Grid --}}
-<div class="dept-grid">
+{{-- Department grid --}}
+<div class="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
     @forelse ($departments as $dept)
-        <div class="dept-card {{ $dept->is_active ? '' : 'inactive' }}">
-            <div class="dept-header">
-                <div class="dept-icon">
-                    <i class='bx bxs-buildings'></i>
+        <article class="ui-card flex flex-col gap-3 p-4 sm:p-5 {{ $dept->is_active ? '' : 'opacity-75' }}">
+            <header class="flex items-start justify-between gap-3">
+                <div class="min-w-0">
+                    <div class="text-xs font-bold text-cvsu-green-700">{{ $dept->department_code }}</div>
+                    <h3 class="mt-0.5 text-base font-semibold leading-snug text-ink">{{ $dept->department_name }}</h3>
                 </div>
-                <div class="dept-status status-{{ $dept->is_active ? 'active' : 'inactive' }}">
+                <span class="ui-badge shrink-0 {{ $dept->is_active ? 'bg-cvsu-green-100 text-cvsu-green-800' : 'bg-gray-100 text-muted' }}">
                     {{ $dept->is_active ? 'Active' : 'Inactive' }}
-                </div>
-            </div>
+                </span>
+            </header>
 
-            <div class="dept-info">
-                <div class="dept-code">{{ $dept->department_code }}</div>
-                <h3>{{ $dept->department_name }}</h3>
-                @if ($dept->description)
-                    <div class="dept-description">{{ $dept->description }}</div>
-                @endif
-            </div>
-
-            <div class="dept-stats">
-                <div class="stat-item">
-                    <span class="stat-number">{{ $dept->user_count }}</span>
-                    <div class="stat-label">Users</div>
-                </div>
-                <div class="stat-item">
-                    <span class="stat-number">{{ $dept->folder_count }}</span>
-                    <div class="stat-label">Folders</div>
-                </div>
-                <div class="stat-item">
-                    <span class="stat-number">{{ $dept->file_count }}</span>
-                    <div class="stat-label">Files</div>
-                </div>
-                <div class="stat-item">
-                    <span class="stat-number">{{ formatFileSize($dept->total_size) }}</span>
-                    <div class="stat-label">Storage</div>
-                </div>
-            </div>
-
-            @if ($dept->head_of_department || $dept->contact_email || $dept->contact_phone)
-                <div class="dept-contact">
-                    @if ($dept->head_of_department)
-                        <div><i class='bx bx-user'></i> {{ $dept->head_of_department }}</div>
-                    @endif
-                    @if ($dept->contact_email)
-                        <div><i class='bx bx-envelope'></i> {{ $dept->contact_email }}</div>
-                    @endif
-                    @if ($dept->contact_phone)
-                        <div><i class='bx bx-phone'></i> {{ $dept->contact_phone }}</div>
-                    @endif
-                </div>
+            @if ($dept->description)
+                <p class="text-sm text-muted">{{ $dept->description }}</p>
             @endif
 
-            <div class="dept-actions">
-                <button onclick="editDepartment({{ $dept->id }})" class="btn btn-primary">
+            <dl class="grid grid-cols-4 rounded-xl bg-[#f1f5f2] py-3 text-center">
+                @foreach ([['Users', $dept->user_count], ['Folders', $dept->folder_count], ['Files', $dept->file_count], ['Storage', formatFileSize($dept->total_size)]] as [$label, $value])
+                    <div class="min-w-0 px-1">
+                        <dd class="whitespace-nowrap text-base font-bold text-ink">{{ $value }}</dd>
+                        <dt class="text-xs text-muted">{{ $label }}</dt>
+                    </div>
+                @endforeach
+            </dl>
+
+            @if ($dept->head_of_department || $dept->contact_email || $dept->contact_phone)
+                <ul class="grid gap-1 text-sm text-gray-700">
+                    @if ($dept->head_of_department)
+                        <li class="flex items-center gap-2"><i class='bx bx-user text-cvsu-green-600'></i> {{ $dept->head_of_department }}</li>
+                    @endif
+                    @if ($dept->contact_email)
+                        <li class="flex items-center gap-2 break-all"><i class='bx bx-envelope text-cvsu-green-600'></i> {{ $dept->contact_email }}</li>
+                    @endif
+                    @if ($dept->contact_phone)
+                        <li class="flex items-center gap-2"><i class='bx bx-phone text-cvsu-green-600'></i> {{ $dept->contact_phone }}</li>
+                    @endif
+                </ul>
+            @endif
+
+            <footer class="mt-auto grid grid-cols-2 gap-2 pt-1 [&>*:last-child:nth-child(odd)]:col-span-2">
+                <button onclick="editDepartment({{ $dept->id }})" class="ui-btn-ghost flex-1">
                     <i class='bx bx-edit'></i> Edit
                 </button>
-
-                <button onclick="toggleStatus({{ $dept->id }})" 
-                        class="btn {{ $dept->is_active ? 'btn-warning' : 'btn-success' }}">
+                <button onclick="toggleStatus({{ $dept->id }})" class="ui-btn-ghost flex-1">
                     <i class='bx {{ $dept->is_active ? 'bx-pause' : 'bx-play' }}'></i>
                     {{ $dept->is_active ? 'Deactivate' : 'Activate' }}
                 </button>
-
                 @if ($dept->user_count == 0 && $dept->folder_count == 0)
-                    <button onclick="deleteDepartment({{ $dept->id }}, '{{ $dept->department_name }}')" 
-                            class="btn btn-danger">
+                    <button onclick="deleteDepartment({{ $dept->id }}, @js($dept->department_name))" class="ui-btn-danger flex-1">
                         <i class='bx bx-trash'></i> Delete
                     </button>
                 @endif
-            </div>
-        </div>
+            </footer>
+        </article>
     @empty
-        <div style="text-align: center; padding: 60px; color: #666;">
-            <i class='bx bx-buildings' style="font-size: 64px; margin-bottom: 20px; display: block;"></i>
-            <h3>No departments found</h3>
-            <p>Try adjusting your search criteria or create a new department</p>
-            <button onclick="openModal('createDeptModal')" class="btn btn-primary" style="margin-top: 15px;">
-                <i class='bx bx-plus'></i> Add Department
+        <div class="ui-card col-span-full flex flex-col items-center gap-2 px-6 py-14 text-center">
+            <i class='bx bx-buildings text-5xl text-cvsu-green-600'></i>
+            <h3 class="text-lg font-semibold text-ink">No departments found</h3>
+            <p class="text-sm text-muted">Change the search or add a new department.</p>
+            <button onclick="openModal('createDeptModal')" class="ui-btn-primary mt-2">
+                <i class='bx bx-plus'></i> Add department
             </button>
         </div>
     @endforelse
@@ -185,7 +157,7 @@
 
 {{-- Pagination --}}
 @if ($departments->lastPage() > 1)
-    <div class="pagination">
+    <div class="mt-6 flex flex-wrap items-center justify-center gap-2 text-sm">
         @if ($departments->currentPage() > 1)
             <a href="{{ $departments->previousPageUrl() }}">&laquo; Previous</a>
         @endif
