@@ -291,7 +291,7 @@
                              These carry the shared .btn classes so their
                              colour, height and radius come from the design
                              system rather than a private palette here. --}}
-                        <a href="document-tracker.php?search={{ urlencode($faculty['surname']) }}" class="btn btn-primary btn-sm btn-view">
+                        <a href="{{ route('admin.document-tracker', ['search' => $faculty['surname']]) }}" class="btn btn-primary btn-sm btn-view">
                             <i class='bx bx-show'></i> View Submissions
                         </a>
                         <button type="button" class="btn btn-secondary btn-sm btn-message" onclick="openMessageModal({{ $faculty['id'] }}, '{{ $faculty['full_name'] }}')">
