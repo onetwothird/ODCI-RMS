@@ -218,6 +218,7 @@
             var body = new URLSearchParams();
             body.set('action', action);
             body.set('csrf_token', csrfToken);
+            body.set('_token', csrfToken);
             if (item) {
                 body.set('id', String(item.id));
                 body.set('source', item.source);
