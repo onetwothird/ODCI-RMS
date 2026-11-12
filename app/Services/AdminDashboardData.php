@@ -258,12 +258,10 @@ class AdminDashboardData
         if (! is_dir($uploadsDir)) {
             $uploadsDir = base_path();
         }
-        $quotaBytes = is_string($uploadsDir) && @disk_total_space($uploadsDir)
-            ? (float) @disk_total_space($uploadsDir)
-            : 0.0;
-        $freeBytes = is_string($uploadsDir) && @disk_free_space($uploadsDir)
-            ? (float) @disk_free_space($uploadsDir)
-            : 0.0;
+        // Shared hosts often disable disk_*_space(); on PHP 8 calling a disabled
+        // function throws, so treat the quota as unknown instead of crashing.
+        $quotaBytes = $this->diskBytes('disk_total_space', $uploadsDir);
+        $freeBytes = $this->diskBytes('disk_free_space', $uploadsDir);
         $storagePct = $quotaBytes > 0
             ? $this->percent($summary['storage_bytes'], $quotaBytes)
             : 0.0;
@@ -513,5 +511,23 @@ class AdminDashboardData
         ];
 
         return $meta[$type] ?? ['info', 'bx-bell'];
+    }
+
+    /**
+     * Calls disk_total_space()/disk_free_space() when the host allows it.
+     */
+    private function diskBytes(string $function, string $path): float
+    {
+        if (! function_exists($function)) {
+            return 0.0;
+        }
+
+        try {
+            $bytes = @$function($path);
+        } catch (\Throwable) {
+            return 0.0;
+        }
+
+        return is_numeric($bytes) ? (float) $bytes : 0.0;
     }
 }

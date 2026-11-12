@@ -67,7 +67,7 @@
     <div class="flex gap-1 overflow-x-auto rounded-full bg-white p-1 shadow-card">
         @foreach (['all' => 'All', 'active' => 'Active', 'inactive' => 'Inactive'] as $key => $label)
             @php $isCurrent = request()->query('status', 'all') === $key; @endphp
-            <a href="{{ $departments->appends(array_merge(request()->query(), ['status' => $key, 'page' => 1])) }}"
+            <a href="{{ request()->fullUrlWithQuery(['status' => $key, 'page' => 1]) }}"
                class="whitespace-nowrap rounded-full px-4 py-1.5 text-sm font-semibold transition {{ $isCurrent ? 'bg-cvsu-green-600 text-white' : 'text-cvsu-green-700 hover:bg-cvsu-green-50' }}">
                 {{ $label }} ({{ $counts[$key] }})
             </a>
@@ -80,7 +80,7 @@
                value="{{ request()->query('search', '') }}" class="ui-input w-full sm:w-64">
         <button type="submit" class="ui-btn-primary"><i class='bx bx-search'></i> Search</button>
         @if (request()->query('search'))
-            <a href="{{ $departments->appends(array_diff_key(request()->query(), ['search' => ''])) }}" class="ui-btn-ghost">
+            <a href="{{ request()->fullUrlWithoutQuery(['search', 'page']) }}" class="ui-btn-ghost">
                 <i class='bx bx-x'></i> Clear
             </a>
         @endif
