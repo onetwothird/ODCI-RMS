@@ -506,7 +506,6 @@ class FileManagerController extends Controller
             ->where('f.uploaded_by', $user->id)
             ->where('f.is_deleted', 0)
             ->where('fo.is_deleted', 0)
-            ->whereNull('fo.parent_id')
             ->whereNotNull('fo.category')
             ->select('fo.category', DB::raw('COUNT(*) as c'))
             ->groupBy('fo.category')
@@ -841,7 +840,6 @@ class FileManagerController extends Controller
             ->where('f.uploaded_by', $user->id)
             ->where('f.is_deleted', 0)
             ->where('fo.is_deleted', 0)
-            ->whereNull('fo.parent_id')
             ->get([
                 'f.id', 'f.file_name', 'f.original_name', 'f.file_path', 'f.file_size',
                 'f.file_type', 'f.mime_type', 'f.file_extension',
@@ -903,7 +901,6 @@ class FileManagerController extends Controller
             ->where('f.uploaded_by', $user->id)
             ->where('f.is_deleted', 0)
             ->where('fo.is_deleted', 0)
-            ->whereNull('fo.parent_id')
             ->whereNotNull('fo.category')
             ->pluck('fo.category')
             ->countBy();
