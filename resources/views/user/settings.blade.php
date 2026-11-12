@@ -4,7 +4,6 @@
 @section('body-class', 'user-settings-page')
 
 @section('page-css')
-    <link rel="stylesheet" href="{{ asset('css/tailwind.css') }}">
 @endsection
 
 @section('content')
