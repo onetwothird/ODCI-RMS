@@ -33,7 +33,10 @@ class DepartmentController extends Controller
         $departments = $this->applyFilters(Department::query(), $filters)
             // user_count / folder_count / file_count / total_size reproduce the
             // legacy aggregate query, including its `u.is_approved = 1` join.
-            ->leftJoin('users', 'users.department_id', '=', 'departments.id')
+            ->leftJoin('users', function ($join) {
+                $join->on('users.department_id', '=', 'departments.id')
+                    ->where('users.is_approved', 1);
+            })
             ->leftJoin('folders', function ($join) {
                 $join->on('folders.department_id', '=', 'departments.id')
                     ->where('folders.is_deleted', 0);
