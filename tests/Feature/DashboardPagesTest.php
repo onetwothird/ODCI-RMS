@@ -48,8 +48,8 @@ class DashboardPagesTest extends TestCase
         $response->assertOk();
         $response->assertSee('id="sidebar"', false);
         $response->assertSee('<section id="content">', false);
-        $response->assertSee('css/cvsu-theme.css', false);
-        $response->assertSee('boxicons@2.0.9', false);
+        $response->assertSee('build/assets/app-', false);
+        $response->assertSee('boxicons@2.1.4', false);
         $response->assertSee('js/cvsu-theme.js', false);
     }
 
@@ -146,11 +146,19 @@ class DashboardPagesTest extends TestCase
     // Legacy assets that every layout depends on
     // -----------------------------------------------------------------
 
+    public function test_vite_bundle_is_built_with_tailwind_and_design_system(): void
+    {
+        $manifest = json_decode((string) file_get_contents(public_path('build/manifest.json')), true);
+
+        $this->assertArrayHasKey('resources/css/app.css', $manifest, 'Run `npm run build`.');
+        $css = file_get_contents(public_path('build/'.$manifest['resources/css/app.css']['file']));
+        $this->assertStringContainsString('--cvsu-green-600', $css, 'shared design system is bundled');
+        $this->assertStringContainsString('.ui-btn-primary', $css, 'Tailwind component layer is bundled');
+    }
+
     public function test_legacy_stylesheet_assets_exist(): void
     {
         $assets = [
-            'css/cvsu-theme.css',
-            'css/cvsu-product.css',
             'js/cvsu-theme.js',
             'css/superadmin/base.css',
             'css/superadmin/sidebar.css',
