@@ -20,6 +20,19 @@ class LegacyUploadController extends Controller
 
     public function __invoke(Request $request, string $path): BinaryFileResponse
     {
+        // Images uploaded through Laravel live in storage/app/private/uploads. Callers
+        // (the social feed JS, legacy markup) may pass the stored value with or without
+        // the leading "uploads/", so accept both before falling back to the legacy folder.
+        $privateBase = realpath(storage_path('app'.DIRECTORY_SEPARATOR.'private'.DIRECTORY_SEPARATOR.'uploads'));
+        if ($privateBase !== false) {
+            $relative = preg_replace('#^uploads/#', '', ltrim(str_replace(chr(92), '/', $path), '/'));
+            $private = realpath($privateBase.DIRECTORY_SEPARATOR.str_replace('/', DIRECTORY_SEPARATOR, $relative));
+
+            if ($private !== false && is_file($private) && str_starts_with($private, $privateBase.DIRECTORY_SEPARATOR)) {
+                return response()->file($private, ['Cache-Control' => 'private, max-age=86400']);
+            }
+        }
+
         $absolute = $this->files->resolve($path);
 
         abort_if($absolute === null, 404);
