@@ -57,17 +57,35 @@ class LegacyFileResolver
             return null;
         }
 
-        $base = $this->baseDirectory();
+        // Files uploaded through Laravel live under storage/app/private/uploads;
+        // older ones sit in the legacy uploads folder. Check both, Laravel first.
+        foreach ([$this->privateDirectory(), $this->baseDirectory()] as $base) {
+            foreach ($this->candidates(preg_replace('#^uploads/#', '', ltrim(str_replace(chr(92), '/', $storedPath), '/')), $folder) as $candidate) {
+                $absolute = $base.DIRECTORY_SEPARATOR.$candidate;
 
-        foreach ($this->candidates($storedPath, $folder) as $candidate) {
-            $absolute = $base.DIRECTORY_SEPARATOR.$candidate;
+                if (is_file($absolute)) {
+                    return $absolute;
+                }
+            }
 
-            if (is_file($absolute)) {
-                return $absolute;
+            foreach ($this->candidates($storedPath, $folder) as $candidate) {
+                $absolute = $base.DIRECTORY_SEPARATOR.$candidate;
+
+                if (is_file($absolute)) {
+                    return $absolute;
+                }
             }
         }
 
         return null;
+    }
+
+    /**
+     * Directory that receives uploads made through the Laravel app.
+     */
+    public function privateDirectory(): string
+    {
+        return storage_path('app'.DIRECTORY_SEPARATOR.'private'.DIRECTORY_SEPARATOR.'uploads');
     }
 
     /**
@@ -91,7 +109,9 @@ class LegacyFileResolver
      */
     public function relativePath(string $absolutePath): string
     {
-        $base = $this->baseDirectory();
+        $base = str_starts_with($absolutePath, $this->privateDirectory())
+            ? $this->privateDirectory()
+            : $this->baseDirectory();
 
         // Used to build URLs, so normalise Windows separators to "/".
         return str_replace('\\', '/', ltrim(substr($absolutePath, strlen($base)), '/\\'));
