@@ -11,7 +11,7 @@
     <link rel="icon" type="image/png" href="{{ asset('img/cvsu-logo.png') }}">
 
     {{-- Boxicons (legacy version) --}}
-    <link href='https://unpkg.com/boxicons@2.0.9/css/boxicons.min.css' rel='stylesheet'>
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
 
     {{-- Page CSS loaded before the component stylesheets (legacy order) --}}
     @yield('page-css-pre')
@@ -25,8 +25,7 @@
     @yield('page-css')
 
     {{-- Shared CVSU design system (green / gold / white) - loaded last on purpose --}}
-    <link rel="stylesheet" href="{{ asset('css/cvsu-theme.css') }}">
-    <link rel="stylesheet" href="{{ asset('css/cvsu-product.css') }}">
+    @vite('resources/css/app.css')
 </head>
 
 <body>
@@ -51,6 +50,7 @@
     <script src="{{ asset('js/superadmin/script.js') }}"></script>
 
     @yield('scripts')
+    @stack('scripts')
 </body>
 
 </html>
