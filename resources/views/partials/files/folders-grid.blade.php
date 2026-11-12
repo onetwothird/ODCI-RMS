@@ -86,7 +86,7 @@
         </div>
         <div class="rounded-card border border-line bg-white p-4 shadow-card">
             <div class="flex items-center gap-3">
-                <div class="flex h-10 w-10 items-center justify-center rounded-full bg-cvsu-green-100 text-cvsu-green-600"><i class='bx bxs-size text-xl'></i></div>
+                <div class="flex h-10 w-10 items-center justify-center rounded-full bg-cvsu-green-100 text-cvsu-green-600"><i class='bx bxs-data text-xl'></i></div>
                 <div><div class="text-xl font-extrabold text-ink">{{ $fs($summary->total_size ?? 0) }}</div><div class="text-xs text-muted">Total Size</div></div>
             </div>
         </div>
