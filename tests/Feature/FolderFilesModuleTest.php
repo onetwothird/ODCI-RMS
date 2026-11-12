@@ -198,7 +198,7 @@ class FolderFilesModuleTest extends TestCase
     private function assertFilePagesSkeleton($response): void
     {
         $response->assertOk();
-        $response->assertSee('css/tailwind.css', false);
+        $response->assertSee('build/assets/app-', false);
     }
 
     // -----------------------------------------------------------------
