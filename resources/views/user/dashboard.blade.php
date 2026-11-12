@@ -135,7 +135,7 @@
                 @if ($stats['recent_uploads']->count() > 6)
                     <div style="text-align: center; margin-top: 16px; padding-top: 16px; border-top: 1px solid rgba(0,0,0,0.06);">
                         {{-- Legacy: files.php (module not migrated yet) --}}
-                        <a href="#" style="color: var(--blue); text-decoration: none; font-weight: 500; font-size: 14px;">
+                        <a href="{{ route('user.folders') }}" style="color: var(--blue); text-decoration: none; font-weight: 500; font-size: 14px;">
                             View All Files ({{ $stats['recent_uploads']->count() }} total) &rarr;
                         </a>
                     </div>
@@ -145,7 +145,7 @@
                     <i class='bx bx-file'></i>
                     <p>No files uploaded yet</p>
                     {{-- Legacy: folders.php (module not migrated yet) --}}
-                    <a href="#">Upload your first file</a>
+                    <a href="{{ route('user.folders') . '?upload=1' }}">Upload your first file</a>
                 </div>
             @endif
         </div>
@@ -159,7 +159,7 @@
                 </div>
                 <div class="quick-actions">
                     {{-- Legacy: folders.php (module not migrated yet) --}}
-                    <a href="#" class="action-item">
+                    <a href="{{ route('user.folders') . '?upload=1' }}" class="action-item">
                         <div class="action-content">
                             <div class="action-icon">
                                 <i class='bx bx-upload'></i>
@@ -169,7 +169,7 @@
                         <i class='bx bx-chevron-right action-arrow'></i>
                     </a>
 
-                    <a href="#" class="action-item">
+                    <a href="{{ route('user.folders') }}" class="action-item">
                         <div class="action-content">
                             <div class="action-icon">
                                 <i class='bx bx-folder-plus'></i>
@@ -179,7 +179,7 @@
                         <i class='bx bx-chevron-right action-arrow'></i>
                     </a>
 
-                    <a href="#" class="action-item">
+                    <a href="{{ route('user.folders') }}" class="action-item">
                         <div class="action-content">
                             <div class="action-icon">
                                 <i class='bx bx-folder-open'></i>
@@ -189,7 +189,7 @@
                         <i class='bx bx-chevron-right action-arrow'></i>
                     </a>
 
-                    <a href="#" class="action-item">
+                    <a href="{{ route('user.folders') }}" class="action-item">
                         <div class="action-content">
                             <div class="action-icon">
                                 <i class='bx bx-share'></i>
