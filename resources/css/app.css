@@ -1,1 +1,19 @@
-@tailwind .
+/*
+ * Single stylesheet entry, built by Vite (`npm run build`).
+ *
+ *   1. Tailwind base/components/utilities  - used by the views
+ *   2. The shared CVSU design system       - still needed by pages that have not
+ *      been converted to utilities yet (see resources/css/legacy)
+ *
+ * Utilities are scoped under `body` (tailwind.config.js) so they always beat the
+ * legacy single-class rules regardless of source order.
+ */
+@import 'tailwindcss/base';
+@import 'tailwindcss/components';
+
+@import './legacy/cvsu-theme.css';
+@import './legacy/cvsu-product.css';
+@import './components.css';
+@import './surfaces.css';
+
+@import 'tailwindcss/utilities';
