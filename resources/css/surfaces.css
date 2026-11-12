@@ -1,0 +1,103 @@
+/* Tailwind's preflight is off, so bare buttons kept the browser's black border and grey fill.
+   :where() keeps this at zero specificity: any class (utility or legacy) still wins. */
+@layer base {
+    :where(button, input[type='button'], input[type='submit'], input[type='reset']) {
+        @apply border-0 border-solid border-line bg-transparent font-[inherit] text-[inherit];
+    }
+}
+
+/* Modals share one look across every legacy markup family (.modal, .modal-bg,
+   .modal-backdrop). Authored with Tailwind @apply so there is no raw CSS. */
+@layer components {
+    body .modal:not([style*="block"]):not([style*="flex"]) { @apply !hidden; }
+    body :is(.modal, .modal-bg, .modal-backdrop) {
+        @apply !fixed !inset-0 !z-[1100] !overflow-y-auto !rounded-none !bg-ink/45 !p-0 !shadow-none !backdrop-blur-none sm:!p-4;
+    }
+    body :is(.modal-bg.show, .modal-bg.active, .modal-backdrop.show, .modal-backdrop.active, .modal[style*="block"], .modal[style*="flex"]) {
+        @apply !flex items-end justify-center sm:items-center;
+    }
+
+    body :is(.modal-panel, .modal-content, .modal-shell) {
+        @apply relative !m-0 mt-auto !w-full !max-w-none !overflow-hidden !rounded-t-2xl !border-0 !bg-white !p-0 !shadow-2xl sm:!m-auto sm:!max-w-[560px] sm:!rounded-2xl;
+    }
+
+    body :is(.modal-header, .modal-titlebar, .modal-panel > div:first-child) {
+        @apply !relative !flex !items-center !justify-between gap-3 !border-0 !bg-white !px-5 !py-4;
+    }
+    body :is(.modal-header, .modal-titlebar)::after { @apply !hidden; }
+    body :is(.modal-header, .modal-titlebar) :is(h2, h3),
+    body .modal-panel > div:first-child h3 {
+        @apply !m-0 !text-base !font-bold !text-ink;
+    }
+
+    body :is(.modal-close, .modal-header .close, .modal-panel > div:first-child > button) {
+        @apply grid h-9 w-9 flex-none cursor-pointer place-items-center !rounded-[10px] !border-0 !bg-[#f1f5f2] !p-0 text-xl leading-none !text-gray-700 transition hover:!bg-cvsu-green-100;
+    }
+
+    body :is(.modal-content > form, .modal-panel > form, .modal-shell .modal-body, .modal-content > .modal-body) {
+        @apply !px-5 !pb-5 !pt-1;
+    }
+    body :is(.modal, .modal-panel, .modal-shell) .form-group { @apply mb-3.5; }
+    body :is(.modal, .modal-panel, .modal-shell) label { @apply mb-1 block text-xs font-semibold text-ink; }
+    body :is(.modal, .modal-panel, .modal-shell) :is(input:not([type=checkbox]):not([type=radio]):not([type=file]), select, textarea) {
+        @apply min-h-10 w-full rounded-[10px] border border-line bg-white px-3 py-2 text-sm text-ink focus:border-cvsu-green-400 focus:outline-none focus:ring-2 focus:ring-cvsu-green-100;
+    }
+    body :is(.modal, .modal-panel, .modal-shell) textarea { @apply min-h-24 resize-y; }
+    body :is(.modal, .modal-panel, .modal-shell) .form-row { @apply !grid !grid-cols-1 gap-x-3.5 sm:!grid-cols-2; }
+    body :is(.modal, .modal-panel, .modal-shell) small { @apply mt-1 block text-xs !text-muted; }
+
+    body :is(.modal, .modal-panel, .modal-shell) :is(.modal-actions, .form-actions, .modal-footer) {
+        @apply !mt-2 flex flex-col-reverse flex-wrap gap-2 !border-0 !bg-transparent !p-0 sm:flex-row sm:justify-end;
+    }
+    body :is(.modal, .modal-panel, .modal-shell) :is(.modal-actions, .form-actions, .modal-footer) :is(.btn, button) {
+        @apply w-full justify-center sm:w-auto;
+    }
+}
+
+/* Buttons: flat solid. One recipe for every legacy .btn variant. The #content copy
+   keeps page stylesheets from restyling buttons. */
+@layer components {
+    body :is(.btn, .btn-action, .btn-view, .btn-stats, .btn-message, .btn-outline, .btn-ghost, .btn-text) {
+        @apply !inline-flex !h-9 !items-center !justify-center !gap-2 !whitespace-nowrap !rounded-lg !border-0 !px-4 !py-0 !text-sm !font-semibold !leading-none !shadow-none !transition focus-visible:!outline-none focus-visible:!ring-2 focus-visible:!ring-cvsu-green-300 disabled:!cursor-not-allowed disabled:!opacity-60;
+    }
+    body :is(.btn, .btn-action, .btn-view, .btn-stats, .btn-message, .btn-outline, .btn-ghost, .btn-text) i { @apply !text-base !leading-none; }
+    body .btn:hover { @apply !translate-y-0; }
+
+    body :is(.btn-primary, .btn-view, .btn-message, .btn-success) { @apply !bg-cvsu-green-600 !text-white hover:!bg-cvsu-green-700; }
+    body :is(.btn-primary, .btn-view, .btn-message, .btn-success) :is(i, span) { @apply !text-white; }
+
+    body :is(.btn-secondary, .btn-outline, .btn-ghost, .btn-stats, .btn-action) { @apply !bg-gray-100 !text-gray-800 hover:!bg-gray-200; }
+    body :is(.btn-secondary, .btn-outline, .btn-ghost, .btn-stats, .btn-action) :is(i, span) { @apply !text-gray-700; }
+    body .btn-text { @apply !bg-transparent !px-2 !text-cvsu-green-700 hover:!bg-cvsu-green-50; }
+
+    body .btn-danger { @apply !bg-red-600 !text-white hover:!bg-red-700; }
+    body .btn-danger :is(i, span) { @apply !text-white; }
+    body .btn-warning { @apply !bg-cvsu-gold-400 !text-ink hover:!bg-cvsu-gold-500; }
+    body .btn-warning :is(i, span) { @apply !text-ink; }
+
+    body .btn-sm { @apply !h-8 !px-3 !text-xs; }
+    body .btn-icon { @apply !inline-grid !h-9 !w-9 !place-items-center !rounded-lg !border-0 !bg-gray-100 !p-0 !text-gray-700 hover:!bg-gray-200; }
+    body :is(.btn, .btn-primary, .btn-secondary) .bx-loader-alt { @apply animate-spin; }
+
+    body #content :is(.btn, .btn-action, .btn-view, .btn-stats, .btn-message, .btn-outline, .btn-ghost, .btn-text) {
+        @apply !inline-flex !h-9 !items-center !justify-center !gap-2 !whitespace-nowrap !rounded-lg !border-0 !px-4 !py-0 !text-sm !font-semibold !leading-none !shadow-none !transition focus-visible:!outline-none focus-visible:!ring-2 focus-visible:!ring-cvsu-green-300 disabled:!cursor-not-allowed disabled:!opacity-60;
+    }
+    body #content :is(.btn, .btn-action, .btn-view, .btn-stats, .btn-message, .btn-outline, .btn-ghost, .btn-text) i { @apply !text-base !leading-none; }
+    body #content .btn:hover { @apply !translate-y-0; }
+
+    body #content :is(.btn-primary, .btn-view, .btn-message, .btn-success) { @apply !bg-cvsu-green-600 !text-white hover:!bg-cvsu-green-700; }
+    body #content :is(.btn-primary, .btn-view, .btn-message, .btn-success) :is(i, span) { @apply !text-white; }
+
+    body #content :is(.btn-secondary, .btn-outline, .btn-ghost, .btn-stats, .btn-action) { @apply !bg-gray-100 !text-gray-800 hover:!bg-gray-200; }
+    body #content :is(.btn-secondary, .btn-outline, .btn-ghost, .btn-stats, .btn-action) :is(i, span) { @apply !text-gray-700; }
+    body #content .btn-text { @apply !bg-transparent !px-2 !text-cvsu-green-700 hover:!bg-cvsu-green-50; }
+
+    body #content .btn-danger { @apply !bg-red-600 !text-white hover:!bg-red-700; }
+    body #content .btn-danger :is(i, span) { @apply !text-white; }
+    body #content .btn-warning { @apply !bg-cvsu-gold-400 !text-ink hover:!bg-cvsu-gold-500; }
+    body #content .btn-warning :is(i, span) { @apply !text-ink; }
+
+    body #content .btn-sm { @apply !h-8 !px-3 !text-xs; }
+    body #content .btn-icon { @apply !inline-grid !h-9 !w-9 !place-items-center !rounded-lg !border-0 !bg-gray-100 !p-0 !text-gray-700 hover:!bg-gray-200; }
+    body #content :is(.btn, .btn-primary, .btn-secondary) .bx-loader-alt { @apply animate-spin; }
+}
