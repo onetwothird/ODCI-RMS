@@ -512,7 +512,7 @@ function renderStats(stats) {
     const surname = card?.getAttribute('data-name')?.split(' ').pop() || '';
     const openTracker = document.getElementById('statsOpenTracker');
     if (openTracker && surname) {
-        openTracker.href = 'document-tracker.php?search=' + encodeURIComponent(surname);
+        openTracker.href = '/admin/document-tracker?search=' + encodeURIComponent(surname);
     }
 }
 
