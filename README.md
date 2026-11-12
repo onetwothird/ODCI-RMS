@@ -1,4 +1,4 @@
-# ODCI Document Hub — Laravel 11 Port
+# ODCI Document — Laravel 11 Port
 
 Incremental migration of the legacy Vanilla PHP application at
 `C:\laragon\www\ODCI` into this Laravel 11 project.
