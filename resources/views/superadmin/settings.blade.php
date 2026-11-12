@@ -4,12 +4,14 @@
 @section('body-class', 'superadmin-settings-page')
 
 @section('page-css')
-    <link rel="stylesheet" href="{{ asset('css/tailwind.css') }}">
     <style>
-        .sa-tab { border-bottom: 3px solid transparent; color: #6b7280; font-weight: 600; padding: 0.9rem 1.25rem; display: inline-flex;
-            align-items: center; gap: 0.5rem; cursor: pointer; transition: all .2s ease; }
-        .sa-tab:hover { color: #16241c; }
-        .sa-tab.active { color: #1e7e34; border-bottom-color: #1e7e34; }
+        body .sa-tab { appearance: none; background: transparent; border: 0; border-bottom: 3px solid transparent; border-radius: 0; box-shadow: none;
+            color: #6b7280; font: inherit; font-weight: 600; font-size: .9rem; padding: .85rem 1.1rem; display: inline-flex; flex-shrink: 0; white-space: nowrap;
+            align-items: center; gap: .5rem; cursor: pointer; transition: color .2s ease, border-color .2s ease, background .2s ease; }
+        body .sa-tab:hover { color: #16241c; background: #f0fdf4; }
+        body .sa-tab.active { color: #1e7e34; border-bottom-color: #1e7e34; }
+        .sa-tabs { scrollbar-width: thin; -webkit-overflow-scrolling: touch; }
+        @media (max-width: 480px) { body .sa-tab { padding: .75rem .85rem; font-size: .85rem; } }
         .sa-panel { display: none; }
         .sa-panel.active { display: block; animation: saFade .3s ease both; }
         @keyframes saFade { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
@@ -42,29 +44,21 @@
         </div>
 
         @if (session('success_message'))
-            <div class="mb-5 flex items-start gap-3 rounded-card border border-cvsu-green-300 bg-cvsu-green-50 px-5 py-4 shadow-card" role="alert">
-                <i class='bx bxs-check-circle mt-0.5 text-xl text-cvsu-green-600'></i>
-                <p class="text-sm font-medium text-cvsu-green-800">{{ session('success_message') }}</p>
-                <button type="button" class="ml-auto text-cvsu-green-700 hover:text-cvsu-green-900" onclick="this.parentElement.remove()">&times;</button>
-            </div>
-        @endif
+    <x-ui.alert type="success">{{ session('success_message') }}</x-ui.alert>
+@endif
 
         @if (session('error_message'))
-            <div class="mb-5 flex items-start gap-3 rounded-card border border-red-300 bg-red-50 px-5 py-4 shadow-card" role="alert">
-                <i class='bx bxs-error-circle mt-0.5 text-xl text-danger'></i>
-                <p class="text-sm font-medium text-red-800">{{ session('error_message') }}</p>
-                <button type="button" class="ml-auto text-red-700 hover:text-red-900" onclick="this.parentElement.remove()">&times;</button>
-            </div>
-        @endif
+    <x-ui.alert type="error">{{ session('error_message') }}</x-ui.alert>
+@endif
 
-        <div class="overflow-hidden rounded-card border border-line bg-white shadow-card-md">
+        <div class="ui-card overflow-hidden">
             {{-- Header --}}
-            <div class="flex flex-col gap-5 border-b border-line bg-gradient-to-r from-cvsu-green-700 to-cvsu-green-800 px-6 py-6 text-white sm:flex-row sm:items-center">
-                <div class="flex h-20 w-20 shrink-0 items-center justify-center overflow-hidden rounded-2xl bg-white/15 ring-2 ring-white/30 backdrop-blur">
+            <div class="flex flex-col gap-5 border-b border-line bg-gradient-to-r from-cvsu-green-700 to-cvsu-green-800 px-4 py-5 text-white sm:px-6 sm:py-6 sm:flex-row sm:items-center">
+                <div class="flex h-20 w-20 shrink-0 items-center justify-center overflow-hidden rounded-2xl bg-white/15 text-white ring-2 ring-white/30 backdrop-blur">
                     @if ($hasProfileImage)
                         <img src="{{ $profileImage }}" alt="Profile" class="h-full w-full object-cover">
                     @else
-                        <span class="text-3xl font-bold">{{ $initials }}</span>
+                        <span class="text-3xl font-bold text-white">{{ $initials }}</span>
                     @endif
                 </div>
                 <div class="min-w-0">
@@ -82,19 +76,19 @@
             </div>
 
             {{-- Tabs --}}
-            <div class="flex gap-1 overflow-x-auto border-b border-line bg-white px-4">
+            <div class="sa-tabs flex gap-1 overflow-x-auto border-b border-line bg-white px-2 sm:px-4">
                 <button type="button" class="sa-tab active" data-tab="profile"><i class='bx bxs-user-pin'></i> Profile</button>
                 <button type="button" class="sa-tab" data-tab="security"><i class='bx bxs-lock-alt'></i> Security</button>
                 <button type="button" class="sa-tab" data-tab="system"><i class='bx bxs-cog'></i> System</button>
                 <button type="button" class="sa-tab" data-tab="statistics"><i class='bx bxs-bar-chart-alt-2'></i> Statistics</button>
             </div>
 
-            <div class="p-6">
+            <div class="p-4 sm:p-6">
                 {{-- ================= PROFILE TAB ================= --}}
                 <div id="panel-profile" class="sa-panel active">
                     <div class="grid gap-6 lg:grid-cols-[300px_1fr]">
                         <div class="space-y-6">
-                            <div class="rounded-card border border-line bg-white p-5 shadow-card">
+                            <div class="ui-card p-4 sm:p-5">
                                 <h3 class="mb-4 flex items-center gap-2 text-sm font-bold text-ink">
                                     <i class='bx bxs-image-alt text-cvsu-green-600'></i> Profile Photo
                                 </h3>
@@ -136,42 +130,42 @@
                                 <div>
                                     <label class="mb-1.5 block text-sm font-semibold text-ink">First Name <span class="text-danger">*</span></label>
                                     <input type="text" name="name" value="{{ old('name', $currentUser->name) }}" required
-                                           class="w-full rounded-lg border border-line bg-white px-4 py-2.5 text-sm text-ink outline-none transition focus:border-cvsu-green-500 focus:ring-2 focus:ring-cvsu-green-100">
+                                           class="ui-input">
                                 </div>
                                 <div>
                                     <label class="mb-1.5 block text-sm font-semibold text-ink">Middle Initial</label>
                                     <input type="text" name="mi" value="{{ old('mi', $currentUser->mi) }}" maxlength="5"
-                                           class="w-full rounded-lg border border-line bg-white px-4 py-2.5 text-sm text-ink outline-none transition focus:border-cvsu-green-500 focus:ring-2 focus:ring-cvsu-green-100">
+                                           class="ui-input">
                                 </div>
                                 <div>
                                     <label class="mb-1.5 block text-sm font-semibold text-ink">Surname <span class="text-danger">*</span></label>
                                     <input type="text" name="surname" value="{{ old('surname', $currentUser->surname) }}" required
-                                           class="w-full rounded-lg border border-line bg-white px-4 py-2.5 text-sm text-ink outline-none transition focus:border-cvsu-green-500 focus:ring-2 focus:ring-cvsu-green-100">
+                                           class="ui-input">
                                 </div>
                                 <div>
                                     <label class="mb-1.5 block text-sm font-semibold text-ink">Employee ID</label>
                                     <input type="text" name="employee_id" value="{{ old('employee_id', $currentUser->employee_id) }}"
-                                           class="w-full rounded-lg border border-line bg-white px-4 py-2.5 text-sm text-ink outline-none transition focus:border-cvsu-green-500 focus:ring-2 focus:ring-cvsu-green-100">
+                                           class="ui-input">
                                 </div>
                                 <div class="sm:col-span-2">
                                     <label class="mb-1.5 block text-sm font-semibold text-ink">Email Address <span class="text-danger">*</span></label>
                                     <input type="email" name="email" value="{{ old('email', $currentUser->email) }}" required
-                                           class="w-full rounded-lg border border-line bg-white px-4 py-2.5 text-sm text-ink outline-none transition focus:border-cvsu-green-500 focus:ring-2 focus:ring-cvsu-green-100">
+                                           class="ui-input">
                                 </div>
                                 <div>
                                     <label class="mb-1.5 block text-sm font-semibold text-ink">Phone Number</label>
                                     <input type="text" name="phone" value="{{ old('phone', $currentUser->phone) }}"
-                                           class="w-full rounded-lg border border-line bg-white px-4 py-2.5 text-sm text-ink outline-none transition focus:border-cvsu-green-500 focus:ring-2 focus:ring-cvsu-green-100">
+                                           class="ui-input">
                                 </div>
                                 <div>
                                     <label class="mb-1.5 block text-sm font-semibold text-ink">Position / Job Title</label>
                                     <input type="text" name="position" value="{{ old('position', $currentUser->position) }}"
-                                           class="w-full rounded-lg border border-line bg-white px-4 py-2.5 text-sm text-ink outline-none transition focus:border-cvsu-green-500 focus:ring-2 focus:ring-cvsu-green-100">
+                                           class="ui-input">
                                 </div>
                                 <div>
                                     <label class="mb-1.5 block text-sm font-semibold text-ink">Department</label>
                                     <select name="department_id"
-                                            class="w-full rounded-lg border border-line bg-white px-4 py-2.5 text-sm text-ink outline-none transition focus:border-cvsu-green-500 focus:ring-2 focus:ring-cvsu-green-100">
+                                            class="ui-input">
                                         <option value="">— No department —</option>
                                         @foreach ($departments as $deptOption)
                                             <option value="{{ $deptOption->id }}" @selected($currentUser->department_id == $deptOption->id)>
@@ -183,17 +177,17 @@
                                 <div class="sm:col-span-2">
                                     <label class="mb-1.5 block text-sm font-semibold text-ink">Address</label>
                                     <input type="text" name="address" value="{{ old('address', $currentUser->address) }}"
-                                           class="w-full rounded-lg border border-line bg-white px-4 py-2.5 text-sm text-ink outline-none transition focus:border-cvsu-green-500 focus:ring-2 focus:ring-cvsu-green-100">
+                                           class="ui-input">
                                 </div>
                                 <div>
                                     <label class="mb-1.5 block text-sm font-semibold text-ink">Date of Birth</label>
                                     <input type="date" name="date_of_birth"
                                            value="{{ old('date_of_birth', $currentUser->date_of_birth ? \Carbon\Carbon::parse($currentUser->date_of_birth)->format('Y-m-d') : '') }}"
-                                           class="w-full rounded-lg border border-line bg-white px-4 py-2.5 text-sm text-ink outline-none transition focus:border-cvsu-green-500 focus:ring-2 focus:ring-cvsu-green-100">
+                                           class="ui-input">
                                 </div>
                             </div>
                             <div class="mt-6 flex justify-end border-t border-line pt-5">
-                                <button type="submit" class="inline-flex items-center gap-2 rounded-lg bg-cvsu-green-600 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-cvsu-green-700">
+                                <button type="submit" class="ui-btn-primary px-5 py-2.5">
                                     <i class='bx bx-save'></i> Save Changes
                                 </button>
                             </div>
@@ -377,7 +371,7 @@
                         </div>
 
                         <div class="mt-6 flex justify-end border-t border-line pt-5">
-                            <button type="submit" class="inline-flex items-center gap-2 rounded-lg bg-cvsu-green-600 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-cvsu-green-700">
+                            <button type="submit" class="ui-btn-primary px-5 py-2.5">
                                 <i class='bx bx-save'></i> Save System Settings
                             </button>
                         </div>
@@ -409,7 +403,7 @@
                                 ['File Downloads', $stats['file_downloads'], 'bx-download', 'from-cvsu-gold-400 to-cvsu-gold-600'],
                             ],
                             'Announcements & Requests' => [
-                                ['Total Announcements', $stats['total_announcements'], 'bx-megaphone', 'from-cvsu-green-500 to-cvsu-green-700'],
+                                ['Total Announcements', $stats['total_announcements'], 'bxs-megaphone', 'from-cvsu-green-500 to-cvsu-green-700'],
                                 ['Published', $stats['published_announcements'], 'bxs-megaphone', 'from-cvsu-green-500 to-cvsu-green-700'],
                                 ['Document Requests', $stats['total_requests'], 'bx-file', 'from-cvsu-gold-400 to-cvsu-gold-600'],
                                 ['Pending Requests', $stats['pending_requests'], 'bx-time', 'from-cvsu-gold-400 to-cvsu-gold-600'],
@@ -423,7 +417,7 @@
                             <h4 class="mb-3 text-sm font-bold uppercase tracking-wide text-muted">{{ $groupTitle }}</h4>
                             <div class="grid grid-cols-2 gap-4 md:grid-cols-3 xl:grid-cols-5">
                                 @foreach ($cards as [$label, $value, $icon, $gradient])
-                                    <div class="rounded-card border border-line bg-white p-5 shadow-card">
+                                    <div class="ui-card p-4 sm:p-5">
                                         <div class="mb-3 inline-flex h-11 w-11 items-center justify-center rounded-xl bg-gradient-to-br {{ $gradient }} text-white shadow-card">
                                             <i class='bx {{ $icon }} text-xl'></i>
                                         </div>
