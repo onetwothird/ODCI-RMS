@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 
 use App\Http\Middleware\EnsureAccountIsActive;
 use App\Http\Middleware\RoleMiddleware;
