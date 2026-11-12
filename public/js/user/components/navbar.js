@@ -129,7 +129,7 @@
             return;
         }
 
-        const feedUrl = new URL('social_feed.php', window.location.href);
+        const feedUrl = new URL('/user/social-feed', window.location.origin);
         feedUrl.searchParams.set('compose', '1');
         window.location.assign(feedUrl.toString());
     });
@@ -160,7 +160,7 @@
             return;
         }
 
-        const foldersUrl = new URL('folders.php', window.location.href);
+        const foldersUrl = new URL('/user/folders', window.location.origin);
         foldersUrl.searchParams.set('upload', '1');
         window.location.assign(foldersUrl.toString());
     });
