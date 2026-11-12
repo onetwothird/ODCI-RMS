@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\SocialFeed\SocialFeedApiController;
+use App\Http\Controllers\SocialFeed\SocialFeedUploadController;
 use App\Http\Controllers\SocialFeedController;
 use Illuminate\Support\Facades\Route;
 
@@ -98,3 +100,38 @@ Route::middleware(['auth', 'active.account'])->group(function () {
             ->name('social-feed.notifications.count');
     });
 });
+
+/*
+|--------------------------------------------------------------------------
+| Legacy-compatible Social Feed endpoints
+|--------------------------------------------------------------------------
+|
+| public/js/social_feed/*.js is the legacy front-end and calls
+| /social_feed/<name>.php with the legacy request/response shapes. These
+| routes serve exactly those URLs from SocialFeedApiController, so the feed
+| UI (posting, likes, comments, replies, media) works for every role.
+|
+*/
+Route::middleware(['auth', 'active.account'])->prefix('social_feed')->group(function () {
+    Route::get('get_user_info.php', [SocialFeedApiController::class, 'getUserInfo']);
+    Route::get('get_notification_count.php', [SocialFeedApiController::class, 'getNotificationCount']);
+    Route::get('get_posts.php', [SocialFeedApiController::class, 'getPosts']);
+    Route::get('get_post.php', [SocialFeedApiController::class, 'getPost']);
+    Route::get('get_comments.php', [SocialFeedApiController::class, 'getComments']);
+    Route::get('get_replies.php', [SocialFeedApiController::class, 'getReplies']);
+
+    Route::post('create_post.php', [SocialFeedApiController::class, 'createPost']);
+    Route::post('update_post.php', [SocialFeedApiController::class, 'updatePost']);
+    Route::post('delete_post.php', [SocialFeedApiController::class, 'deletePost']);
+    Route::post('toggle_like.php', [SocialFeedApiController::class, 'toggleLike']);
+    Route::post('add_comment.php', [SocialFeedApiController::class, 'addComment']);
+    Route::post('edit_comment.php', [SocialFeedApiController::class, 'editComment']);
+    Route::post('delete_comment.php', [SocialFeedApiController::class, 'deleteComment']);
+    Route::post('reply_comment.php', [SocialFeedApiController::class, 'replyComment']);
+});
+
+// Media referenced by posts: social_feed/uploads/{images,files}/<file>
+Route::middleware(['auth', 'active.account'])
+    ->get('social-feed/uploads/{path}', SocialFeedUploadController::class)
+    ->where('path', '.*')
+    ->name('social-feed.uploads');
