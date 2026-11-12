@@ -17,29 +17,21 @@
 @endphp
 
 @if (session('success_message'))
-    <div class="mb-5 flex items-start gap-3 rounded-card border border-cvsu-green-300 bg-cvsu-green-50 px-5 py-4 shadow-card" role="alert">
-        <i class='bx bxs-check-circle mt-0.5 text-xl text-cvsu-green-600'></i>
-        <p class="text-sm font-medium text-cvsu-green-800">{{ session('success_message') }}</p>
-        <button type="button" class="ml-auto text-cvsu-green-700 hover:text-cvsu-green-900" onclick="this.parentElement.remove()">&times;</button>
-    </div>
+    <x-ui.alert type="success">{{ session('success_message') }}</x-ui.alert>
 @endif
 
 @if (session('error_message'))
-    <div class="mb-5 flex items-start gap-3 rounded-card border border-red-300 bg-red-50 px-5 py-4 shadow-card" role="alert">
-        <i class='bx bxs-error-circle mt-0.5 text-xl text-danger'></i>
-        <p class="text-sm font-medium text-red-800">{{ session('error_message') }}</p>
-        <button type="button" class="ml-auto text-red-700 hover:text-red-900" onclick="this.parentElement.remove()">&times;</button>
-    </div>
+    <x-ui.alert type="error">{{ session('error_message') }}</x-ui.alert>
 @endif
 
-<div class="overflow-hidden rounded-card border border-line bg-white shadow-card">
+<div class="ui-card overflow-hidden">
     {{-- Settings header --}}
-    <div class="flex flex-col gap-5 border-b border-line bg-gradient-to-r from-cvsu-green-700 to-cvsu-green-800 px-6 py-6 text-white sm:flex-row sm:items-center">
-        <a href="{{ route($forRole === 'admin' ? 'admin.profile' : 'user.settings') }}" class="flex h-20 w-20 shrink-0 items-center justify-center overflow-hidden rounded-2xl bg-white/15 ring-2 ring-white/30 backdrop-blur">
+    <div class="flex flex-col gap-5 border-b border-line bg-gradient-to-r from-cvsu-green-700 to-cvsu-green-800 px-4 py-5 text-white sm:px-6 sm:py-6 sm:flex-row sm:items-center">
+        <a href="{{ route($forRole === 'admin' ? 'admin.profile' : 'user.settings') }}" class="flex h-20 w-20 shrink-0 items-center justify-center overflow-hidden rounded-2xl bg-white/15 text-white ring-2 ring-white/30 backdrop-blur">
             @if ($hasProfileImage)
                 <img src="{{ $profileImage }}" alt="Profile" class="h-full w-full object-cover">
             @else
-                <span class="text-3xl font-bold">{{ $initials }}</span>
+                <span class="text-3xl font-bold text-white">{{ $initials }}</span>
             @endif
         </a>
         <div class="min-w-0">
@@ -67,11 +59,11 @@
         </div>
     </div>
 
-    <div class="grid gap-6 p-6 lg:grid-cols-[300px_1fr]">
+    <div class="grid gap-5 p-4 sm:gap-6 sm:p-6 lg:grid-cols-[300px_1fr]">
         {{-- Sidebar column --}}
         <div class="space-y-6">
             {{-- Profile image card --}}
-            <div class="rounded-card border border-line bg-white p-5 shadow-card">
+            <div class="ui-card p-4 sm:p-5">
                 <h3 class="mb-4 flex items-center gap-2 text-sm font-bold text-ink">
                     <i class='bx bxs-image-alt text-cvsu-green-600'></i> Profile Photo
                 </h3>
@@ -103,7 +95,7 @@
             </div>
 
             {{-- Security score card --}}
-            <div class="rounded-card border border-line bg-white p-5 shadow-card">
+            <div class="ui-card p-4 sm:p-5">
                 <h3 class="mb-4 flex items-center gap-2 text-sm font-bold text-ink">
                     <i class='bx bxs-shield-alt-2 text-cvsu-gold-500'></i> Account Security
                 </h3>
@@ -145,7 +137,7 @@
 
             @if ($forRole === 'admin')
                 {{-- Account info --}}
-                <div class="rounded-card border border-line bg-white p-5 shadow-card">
+                <div class="ui-card p-4 sm:p-5">
                     <h3 class="mb-4 flex items-center gap-2 text-sm font-bold text-ink">
                         <i class='bx bxs-user-detail text-cvsu-green-600'></i> Account Info
                     </h3>
@@ -179,11 +171,11 @@
             <form method="POST" action="{{ route('profile.update') }}" class="rounded-card border border-line bg-white p-6 shadow-card">
                 @csrf
                 <input type="hidden" name="action" value="update_profile">
-                <div class="mb-6 flex items-center justify-between border-b border-line pb-4">
+                <div class="mb-5 flex flex-wrap items-center justify-between gap-3 border-b border-line pb-4">
                     <h3 class="flex items-center gap-2 text-base font-bold text-ink">
                         <i class='bx bxs-user-pin text-cvsu-green-600'></i> Profile Information
                     </h3>
-                    <button type="submit" class="inline-flex items-center gap-2 rounded-lg bg-cvsu-green-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-cvsu-green-700">
+                    <button type="submit" class="ui-btn-primary">
                         <i class='bx bx-save'></i> Save Changes
                     </button>
                 </div>
@@ -192,42 +184,42 @@
                     <div>
                         <label for="field_name" class="mb-1.5 block text-sm font-semibold text-ink">First Name <span class="text-danger">*</span></label>
                         <input type="text" id="field_name" name="name" value="{{ old('name', $currentUser->name) }}" required
-                               class="w-full rounded-lg border border-line bg-white px-4 py-2.5 text-sm text-ink outline-none transition focus:border-cvsu-green-500 focus:ring-2 focus:ring-cvsu-green-100">
+                               class="ui-input">
                     </div>
                     <div>
                         <label for="field_mi" class="mb-1.5 block text-sm font-semibold text-ink">Middle Initial</label>
                         <input type="text" id="field_mi" name="mi" value="{{ old('mi', $currentUser->mi) }}" maxlength="5"
-                               class="w-full rounded-lg border border-line bg-white px-4 py-2.5 text-sm text-ink outline-none transition focus:border-cvsu-green-500 focus:ring-2 focus:ring-cvsu-green-100">
+                               class="ui-input">
                     </div>
                     <div>
                         <label for="field_surname" class="mb-1.5 block text-sm font-semibold text-ink">Surname <span class="text-danger">*</span></label>
                         <input type="text" id="field_surname" name="surname" value="{{ old('surname', $currentUser->surname) }}" required
-                               class="w-full rounded-lg border border-line bg-white px-4 py-2.5 text-sm text-ink outline-none transition focus:border-cvsu-green-500 focus:ring-2 focus:ring-cvsu-green-100">
+                               class="ui-input">
                     </div>
                     <div>
                         <label for="field_employee" class="mb-1.5 block text-sm font-semibold text-ink">Employee ID</label>
                         <input type="text" id="field_employee" name="employee_id" value="{{ old('employee_id', $currentUser->employee_id) }}"
-                               class="w-full rounded-lg border border-line bg-white px-4 py-2.5 text-sm text-ink outline-none transition focus:border-cvsu-green-500 focus:ring-2 focus:ring-cvsu-green-100">
+                               class="ui-input">
                     </div>
                     <div class="sm:col-span-2">
                         <label for="field_email" class="mb-1.5 block text-sm font-semibold text-ink">Email Address <span class="text-danger">*</span></label>
                         <input type="email" id="field_email" name="email" value="{{ old('email', $currentUser->email) }}" required
-                               class="w-full rounded-lg border border-line bg-white px-4 py-2.5 text-sm text-ink outline-none transition focus:border-cvsu-green-500 focus:ring-2 focus:ring-cvsu-green-100">
+                               class="ui-input">
                     </div>
                     <div>
                         <label for="field_phone" class="mb-1.5 block text-sm font-semibold text-ink">Phone Number</label>
                         <input type="text" id="field_phone" name="phone" value="{{ old('phone', $currentUser->phone) }}"
-                               class="w-full rounded-lg border border-line bg-white px-4 py-2.5 text-sm text-ink outline-none transition focus:border-cvsu-green-500 focus:ring-2 focus:ring-cvsu-green-100">
+                               class="ui-input">
                     </div>
                     <div>
                         <label for="field_position" class="mb-1.5 block text-sm font-semibold text-ink">Position / Job Title</label>
                         <input type="text" id="field_position" name="position" value="{{ old('position', $currentUser->position) }}"
-                               class="w-full rounded-lg border border-line bg-white px-4 py-2.5 text-sm text-ink outline-none transition focus:border-cvsu-green-500 focus:ring-2 focus:ring-cvsu-green-100">
+                               class="ui-input">
                     </div>
                     <div>
                         <label for="field_department" class="mb-1.5 block text-sm font-semibold text-ink">Department</label>
                         <select id="field_department" name="department_id"
-                                class="w-full rounded-lg border border-line bg-white px-4 py-2.5 text-sm text-ink outline-none transition focus:border-cvsu-green-500 focus:ring-2 focus:ring-cvsu-green-100">
+                                class="ui-input">
                             <option value="">— No department —</option>
                             @foreach ($departments as $deptOption)
                                 <option value="{{ $deptOption->id }}" @selected($currentUser->department_id == $deptOption->id)>
@@ -239,20 +231,20 @@
                     <div class="sm:col-span-2">
                         <label for="field_address" class="mb-1.5 block text-sm font-semibold text-ink">Address</label>
                         <input type="text" id="field_address" name="address" value="{{ old('address', $currentUser->address) }}"
-                               class="w-full rounded-lg border border-line bg-white px-4 py-2.5 text-sm text-ink outline-none transition focus:border-cvsu-green-500 focus:ring-2 focus:ring-cvsu-green-100">
+                               class="ui-input">
                     </div>
                     <div>
                         <label for="field_dob" class="mb-1.5 block text-sm font-semibold text-ink">Date of Birth</label>
                         <input type="date" id="field_dob" name="date_of_birth"
                                value="{{ old('date_of_birth', $currentUser->date_of_birth ? \Carbon\Carbon::parse($currentUser->date_of_birth)->format('Y-m-d') : '') }}"
-                               class="w-full rounded-lg border border-line bg-white px-4 py-2.5 text-sm text-ink outline-none transition focus:border-cvsu-green-500 focus:ring-2 focus:ring-cvsu-green-100">
+                               class="ui-input">
                     </div>
                     @if ($forRole === 'admin')
                         <div>
                             <label for="field_hired" class="mb-1.5 block text-sm font-semibold text-ink">Hire Date</label>
                             <input type="date" id="field_hired" name="hire_date"
                                    value="{{ old('hire_date', $currentUser->hire_date ? \Carbon\Carbon::parse($currentUser->hire_date)->format('Y-m-d') : '') }}"
-                                   class="w-full rounded-lg border border-line bg-white px-4 py-2.5 text-sm text-ink outline-none transition focus:border-cvsu-green-500 focus:ring-2 focus:ring-cvsu-green-100">
+                                   class="ui-input">
                         </div>
                     @endif
                 </div>
@@ -263,7 +255,7 @@
             <form method="POST" action="{{ route('profile.update') }}" class="rounded-card border border-line bg-white p-6 shadow-card" id="passwordForm">
                 @csrf
                 <input type="hidden" name="action" value="change_password">
-                <div class="mb-6 flex items-center justify-between border-b border-line pb-4">
+                <div class="mb-5 flex flex-wrap items-center justify-between gap-3 border-b border-line pb-4">
                     <h3 class="flex items-center gap-2 text-base font-bold text-ink">
                         <i class='bx bxs-lock-alt text-cvsu-gold-500'></i> Change Password
                     </h3>
@@ -277,7 +269,7 @@
                         <label for="field_current" class="mb-1.5 block text-sm font-semibold text-ink">Current Password</label>
                         <div class="relative">
                             <input type="password" id="field_current" name="current_password" required
-                                   class="w-full rounded-lg border border-line bg-white px-4 py-2.5 pr-10 text-sm text-ink outline-none transition focus:border-cvsu-gold-400 focus:ring-2 focus:ring-cvsu-gold-100">
+                                   class="ui-input ui-input-gold pr-10">
                             <button type="button" class="absolute inset-y-0 right-0 flex w-10 items-center justify-center text-muted hover:text-ink" onclick="togglePw('field_current', this)">
                                 <i class='bx bx-show'></i>
                             </button>
@@ -287,7 +279,7 @@
                         <label for="field_new" class="mb-1.5 block text-sm font-semibold text-ink">New Password</label>
                         <div class="relative">
                             <input type="password" id="field_new" name="new_password" required minlength="8"
-                                   class="w-full rounded-lg border border-line bg-white px-4 py-2.5 pr-10 text-sm text-ink outline-none transition focus:border-cvsu-gold-400 focus:ring-2 focus:ring-cvsu-gold-100">
+                                   class="ui-input ui-input-gold pr-10">
                             <button type="button" class="absolute inset-y-0 right-0 flex w-10 items-center justify-center text-muted hover:text-ink" onclick="togglePw('field_new', this)">
                                 <i class='bx bx-show'></i>
                             </button>
@@ -301,7 +293,7 @@
                         <label for="field_confirm" class="mb-1.5 block text-sm font-semibold text-ink">Confirm New Password</label>
                         <div class="relative">
                             <input type="password" id="field_confirm" name="confirm_password" required minlength="8"
-                                   class="w-full rounded-lg border border-line bg-white px-4 py-2.5 pr-10 text-sm text-ink outline-none transition focus:border-cvsu-gold-400 focus:ring-2 focus:ring-cvsu-gold-100">
+                                   class="ui-input ui-input-gold pr-10">
                             <button type="button" class="absolute inset-y-0 right-0 flex w-10 items-center justify-center text-muted hover:text-ink" onclick="togglePw('field_confirm', this)">
                                 <i class='bx bx-show'></i>
                             </button>
