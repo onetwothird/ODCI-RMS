@@ -4,7 +4,6 @@
 @section('body-class', 'user-my-reports-page')
 
 @section('page-css')
-    <link rel="stylesheet" href="{{ asset('css/tailwind.css') }}">
     <style>
         .rep-tab { display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.6rem 1rem; border-radius: 10px;
             font-size: 0.85rem; font-weight: 600; color: #6b7280 !important; border: 1px solid #e6ebe7; background: #fff; transition: all .2s ease; }
@@ -58,7 +57,7 @@
                             'file_uploads' => 'bx-cloud-upload',
                             'document_submissions' => 'bx-file',
                             'activity_summary' => 'bx-bar-chart-alt-2',
-                            default => 'bx-hard-drive',
+                            default => 'bx-hdd',
                         } }}'></i>
                         {{ $label }}
                     </a>
@@ -137,7 +136,7 @@
                         'file_uploads' => 'bx-cloud-upload',
                         'document_submissions' => 'bx-file',
                         'activity_summary' => 'bx-bar-chart-alt-2',
-                        default => 'bx-hard-drive',
+                        default => 'bx-hdd',
                     } }} text-cvsu-green-600'></i>
                     {{ $typeLabels[$reportType] }} Report
                 </h3>
