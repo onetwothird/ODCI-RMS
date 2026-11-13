@@ -9,3 +9,8 @@
 /.github export-ignore
 CHANGELOG.md export-ignore
 .styleci.yml export-ignore
+
+# GitHub language stats (Linguist): exclude static/legacy assets so the
+# repo is reported by its real source code (PHP, Blade, resources/js).
+/public/** linguist-vendored
+/resources/css/legacy/** linguist-vendored
